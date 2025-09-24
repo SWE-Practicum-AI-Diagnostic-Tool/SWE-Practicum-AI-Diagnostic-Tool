@@ -8,15 +8,15 @@ import FormSection from './FormSection.vue'
   <div class="form-container">
     <form>
       <!-- Vehicle Make -->
-      <FormSection title="Vehicle Make" />
+      <FormSection title="Vehicle Make" required />
       <!-- Vehicle Model -->
-      <FormSection title="Vehicle Model" />
+      <FormSection title="Vehicle Model" required />
       <!-- Year of Manufacture -->
-      <FormSection title="Year of Manufacture" />
+      <FormSection title="Year of Manufacture" required />
       <!-- Mileage -->
-      <FormSection title="Mileage" />
+      <FormSection title="Mileage" required />
       <!-- Reported Issues -->
-      <FormSection title="Reported Issues" />
+      <FormSection title="Reported Issues" required />
       <!-- Additional Comments -->
       <FormSection title="Additional Comments" />
       <!-- Submit -->
