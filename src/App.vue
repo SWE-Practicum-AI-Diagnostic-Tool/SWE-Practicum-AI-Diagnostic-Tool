@@ -1,12 +1,12 @@
 <script setup>
-import Home from './components/Home.vue'
+import Form from './components/Form.vue';
 </script>
 
 <template>
+  <header>
+    AI Diagnostic Tool
+  </header>
   <main>
-    <Home />
+    <Form />
   </main>
 </template>
-
-<style scoped>
-</style>
