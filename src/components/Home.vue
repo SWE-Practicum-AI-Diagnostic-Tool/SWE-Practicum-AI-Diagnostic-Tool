@@ -1,15 +1,19 @@
 <script>
-import NaviBar from './NaviBar.vue'
+import NaviBar from './NaviBar.vue';
+export default {
+        methods:{
+            goToForm(){
+                this.$router.push('/form');
+            }
+        }
+    }
 </script>
 
 <template>
-    <head>
-        <p>
-            Hello World
-        </p>
-        
-        <NaviBar />
-    </head>
+    <header>
+        <p> HELLO </p>
+        <button v-on:click="goToForm">Go to Forum</button>
+    </header>
 </template>
 
 <style>

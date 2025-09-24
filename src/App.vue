@@ -1,5 +1,6 @@
 <script setup>
 import Form from './components/Form.vue';
+import Home from './components/Home.vue';
 </script>
 
 <template>
@@ -7,6 +8,6 @@ import Form from './components/Form.vue';
     AI Diagnostic Tool
   </header>
   <main>
-    <Form />
+    <RouterView />
   </main>
 </template>
