@@ -1,12 +1,12 @@
 <script setup>
-import Form from './components/Form.vue';
 </script>
 
 <template>
   <header>
     AI Diagnostic Tool
   </header>
+
   <main>
-    <Form />
+    <router-view />
   </main>
 </template>
