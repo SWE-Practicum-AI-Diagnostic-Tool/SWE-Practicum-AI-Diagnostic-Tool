@@ -1,11 +1,7 @@
 <script setup>
 </script>
 
-<template>
-  <header>
-    AI Diagnostic Tool
-  </header>
-
+<template>  
   <main>
     <router-view />
   </main>
