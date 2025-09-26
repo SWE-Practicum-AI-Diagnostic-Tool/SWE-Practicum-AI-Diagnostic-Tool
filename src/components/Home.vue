@@ -5,7 +5,6 @@
         </main>
     <header>
         <p> HELLO </p>
-        <button v-on:click="goToForm">Go to Forum</button>
     </header>
     </div>
 </template>
@@ -17,9 +16,6 @@ export default {
         NaviBar   
     },
         methods:{
-            goToForm(){
-                this.$router.push('/form');
-            }
         }
     }
 </script>
