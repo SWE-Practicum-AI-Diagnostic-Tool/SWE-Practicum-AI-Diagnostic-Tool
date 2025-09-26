@@ -1,5 +1,6 @@
 <template>
-    
+  <NaviBar />
+
   <div class="login-container">
     <div class="login-card">
       <h1>Login</h1>
@@ -41,6 +42,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import NaviBar from './NaviBar.vue'
 
 const router = useRouter()
 const email = ref('')
@@ -51,7 +53,7 @@ const handleLogin = () => {
   // Test login - replace with real API/auth
   if (email.value === 'test@example.com' && password.value === 'password123') {
     errorMessage.value = ''
-    router.push('/') 
+    router.push('/')
   } else {
     errorMessage.value = 'Invalid email or password.'
   }
