@@ -2,9 +2,11 @@
 
 <script setup>
 import FormSection from './FormSection.vue'
+import NaviBar from './NaviBar.vue';
 </script>
 
 <template>
+  <NaviBar />
   <div class="form-container">
     <form>
       <!-- Vehicle Make -->
