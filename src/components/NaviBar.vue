@@ -11,6 +11,9 @@
  <div>
     <button v-on:click="goToForm"> Form </button>
  </div>
+ <div>
+    <button v-on:click="goToLogin"> Login </button>
+ </div>
 </template>
 
 <script>
@@ -23,6 +26,9 @@
             },
             goToForm(){
                 this.$router.push('/form')
+            },
+            goToLogin(){
+                this.$router.push('/Login')
             }
         }
     }
