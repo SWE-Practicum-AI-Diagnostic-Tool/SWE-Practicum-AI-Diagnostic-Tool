@@ -1,9 +1,15 @@
 <template>
+    <header>
+        AI Diagnostic Tool
+    </header>
  <div>
     <button v-on:click="goToHome"> Home </button>
  </div>
  <div>
     <button v-on:click="goToSupport"> Support </button>
+ </div>
+ <div>
+    <button v-on:click="goToForm"> Form </button>
  </div>
 </template>
 
@@ -13,6 +19,10 @@
             goToSupport(){
             },
             goToHome(){
+                this.$router.push('/');
+            },
+            goToForm(){
+                this.$router.push('/form')
             }
         }
     }
