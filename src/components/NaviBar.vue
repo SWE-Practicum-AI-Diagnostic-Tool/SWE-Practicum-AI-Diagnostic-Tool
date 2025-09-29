@@ -23,6 +23,9 @@ export default {
         goToManageSolutions() {
             this.$router.push('/manage-solutions');
         },
+        goToLogin(){
+          this.$router.push('/Login')
+        }
     },
 };
 </script>

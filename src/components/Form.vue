@@ -2,9 +2,11 @@
 
 <script setup>
 import FormSection from './FormSection.vue'
+import NaviBar from './NaviBar.vue';
 </script>
 
 <template>
+  <NaviBar />
   <div class="form-container">
     <form>
       <!-- Vehicle Make -->
@@ -15,6 +17,14 @@ import FormSection from './FormSection.vue'
       <FormSection title="Year of Manufacture" required />
       <!-- Mileage -->
       <FormSection title="Mileage" required />
+      <!-- Engine -->
+      <FormSection title="Engine" />
+      <!-- Transmission -->
+      <FormSection title="Transmission" />
+      <!-- Trim -->
+      <FormSection title="Trim" />
+      <!-- Bodystyle -->
+      <FormSection title="Bodystyle" />
       <!-- Submit -->
       <button type="submit">Submit</button>
     </form>
