@@ -10,18 +10,6 @@
 
         </nav>
     </header>
- <div>
-    <button v-on:click="goToHome"> Home </button>
- </div>
- <div>
-    <button v-on:click="goToSupport"> Support </button>
- </div>
- <div>
-    <button v-on:click="goToForm"> Form </button>
- </div>
- <div>
-    <button v-on:click="goToLogin"> Login </button>
- </div>
 </template>
 
 <script>
