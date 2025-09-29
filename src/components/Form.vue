@@ -15,10 +15,6 @@ import FormSection from './FormSection.vue'
       <FormSection title="Year of Manufacture" required />
       <!-- Mileage -->
       <FormSection title="Mileage" required />
-      <!-- Reported Issues -->
-      <FormSection title="Reported Issues" required />
-      <!-- Additional Comments -->
-      <FormSection title="Additional Comments" />
       <!-- Submit -->
       <button type="submit">Submit</button>
     </form>

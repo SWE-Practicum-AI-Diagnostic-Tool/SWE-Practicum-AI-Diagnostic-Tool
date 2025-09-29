@@ -4,7 +4,7 @@
         <nav class="nav-buttons">
             <button @click="goToHome">Home</button>
             <button @click="goToSupport">Support</button>
-            <button @click="goToForm">Form</button>
+            <button @click="goToForm">New Vehicle</button>
             <button @click="goToManageSolutions">Manage Solutions</button>
         </nav>
     </header>
@@ -44,7 +44,6 @@ export default {
     display: flex;
     gap: 0.5rem; /* spacing between buttons */
     align-items: center;
-    flex-wrap: wrap; /* allow wrapping on narrow screens */
 }
 .nav-buttons button {
     padding: 0.4rem 0.75rem;
