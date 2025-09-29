@@ -25,6 +25,10 @@ import NaviBar from './NaviBar.vue';
       <FormSection title="Trim" />
       <!-- Bodystyle -->
       <FormSection title="Bodystyle" />
+      <!-- Reported Issues -->
+      <FormSection title="Reported Issues" required />
+      <!-- Additional Comments -->
+      <FormSection title="Additional Comments" />
       <!-- Submit -->
       <button type="submit">Submit</button>
     </form>
