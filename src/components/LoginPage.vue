@@ -35,6 +35,9 @@
         <!-- Submit -->
         <button type="submit">Log In</button>
       </form>
+      <div style="margin-top: 1rem;">
+        <GoogleLogin :callback="handleGoogleLogin" @error="handleGoogleError" />
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +61,14 @@ const handleLogin = () => {
     errorMessage.value = 'Invalid email or password.'
   }
 }
+function handleGoogleLogin(response) {
+  console.log('Google Login Success:', response)
+  router.push('/')
+}
+function handleGoogleError(error) {
+  console.error('Google Login Error:', error)
+}
+
 </script>
 
 <style scoped>
