@@ -13,7 +13,7 @@
 import NaviBar from './NaviBar.vue';
 export default {
     components: {
-        NaviBar   
+        NaviBar
     },
         methods:{
         }
