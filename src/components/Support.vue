@@ -1,17 +1,25 @@
+<script setup>
+import NaviBar from './NaviBar.vue';
+import FormPerson from './FromPerson.vue';
+</script>
+
 <template>
     <NaviBar />
-  <div class="form-container">
-    <form>
-      <!-- Vehicle Make -->
-      <FormSection title="Vehicle Make" required />
-      <!-- Vehicle Model -->
-      <FormSection title="Vehicle Model" required />
-    </form>
-  </div>
+    <div class="form-container">
+        <form>
+        <!-- Person 1 -->
+        <FormPerson title="Eli" Email="myEmail@gmail.com" required />
+        <!-- Person 2-->
+        <FormPerson title="Person 2" Email="myEmail@gmail.com" required />
+        <!-- Person 3-->
+        <FormPerson title="Person 3" Email="myEmail@gmail.com" required />
+        <!-- Person 4-->
+        <FormPerson title="Person 4" Email="myEmail@gmail.com" required />
+        <!-- Person 5-->
+        <FormPerson title="Person 5" Email="myEmail@gmail.com" required />
+        </form>
+    </div>
 </template>
-
-<script>
-</script>
 
 <style>
 .form-container {
