@@ -14,6 +14,8 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ```sh
 npm install
+npm install vue3-google-signin
+npm install vue-router@4
 ```
 
 ### Compile and Hot-Reload for Development
