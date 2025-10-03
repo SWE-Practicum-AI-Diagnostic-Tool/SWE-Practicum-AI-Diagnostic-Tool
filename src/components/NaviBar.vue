@@ -4,7 +4,7 @@
         <nav class="nav-buttons">
             <button @click="goToHome">Home</button>
             <button @click="goToLogin">Login</button>
-            <button @click="goToSupport">Support</button>
+            <button @click="goToSupport">Contact Us!</button>
             <button @click="goToForm">New Vehicle</button>
             <button @click="goToManageSolutions">Manage Solutions</button>
             
@@ -15,7 +15,9 @@
 <script>
 export default {
     methods: {
-        goToSupport() {},
+        goToSupport() {
+            this.$router.push('/Support');
+        },
         goToHome() {
             this.$router.push('/');
         },
@@ -56,6 +58,7 @@ export default {
     background: #fff;
     cursor: pointer;
     border-radius: 4px;
+    color: black;
 }
 .nav-buttons button:hover {
     background: #f2f2f2;
