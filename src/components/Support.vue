@@ -1,6 +1,7 @@
 <script setup>
 import NaviBar from './NaviBar.vue';
 import FormPerson from './FromPerson.vue';
+
 </script>
 
 <template>
@@ -8,15 +9,20 @@ import FormPerson from './FromPerson.vue';
     <div class="form-container">
         <form>
         <!-- Person 1 -->
-        <FormPerson title="Eli" Email="myEmail@gmail.com" required />
+        <FormPerson title="Emmett" Email="myEmail@gmail.com" required />
+        <img src="../assets/Emmett.jpg"></img>
         <!-- Person 2-->
-        <FormPerson title="Person 2" Email="myEmail@gmail.com" required />
+        <FormPerson title="Aaron" Email="myEmail@gmail.com" required />
+        <img src="../assets/Aaron.jpg"></img>
         <!-- Person 3-->
-        <FormPerson title="Person 3" Email="myEmail@gmail.com" required />
+        <FormPerson title="Simon" Email="myEmail@gmail.com" required />
+        <img src="../assets/Simon.jpg"></img>
         <!-- Person 4-->
-        <FormPerson title="Person 4" Email="myEmail@gmail.com" required />
+        <FormPerson title="Connor" Email="myEmail@gmail.com" required />
+        <img src="../assets/Connor.jpg"></img>
         <!-- Person 5-->
-        <FormPerson title="Person 5" Email="myEmail@gmail.com" required />
+        <FormPerson title="Eli" Email="myEmail@gmail.com" required />
+        <img src="../assets/Eli.jpg"></img>
         </form>
     </div>
 </template>
@@ -44,5 +50,10 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+img{
+  max-width: 200px;
+  max-height: 200px;
 }
 </style>
