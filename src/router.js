@@ -5,6 +5,7 @@ import FormView from './components/Form.vue'
 import ManageSolutions from './components/ManageSolutions.vue'
 import SolutionForm from './components/SolutionForm.vue'
 import LoginView from './components/LoginPage.vue'
+import SupportPage from './components/Support.vue'
 import VehicleSubmit from './components/VehicleSubmit.vue'
 import VehicleHelp from './components/VehicleSubmit.vue'
 
@@ -14,6 +15,7 @@ const routes = [
   { path: '/manage-solutions', component: ManageSolutions },
   { path: '/solution-form', component: SolutionForm },
   { path: '/Login', component: LoginView },
+  { path: '/Support', component: SupportPage },
   { path: '/vehicle-submit', component: VehicleSubmit},
   { path: '/vehicle-help', component: VehicleHelp}
 ]
