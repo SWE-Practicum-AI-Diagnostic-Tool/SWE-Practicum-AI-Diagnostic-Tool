@@ -1,8 +1,27 @@
-body, html {
+html, body, #app {
+  /* Make the root elements fill the viewport so we can confine scrolling to <main> */
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
   background-color: white;
+  /* Prevent the browser from showing a page-level scrollbar */
+  overflow: hidden;
+}
+
+#app {
+  /* Use a column flex layout so header/nav can sit above main and main can grow/shrink */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+main {
+  /* Let main take remaining space and scroll internally */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 header {

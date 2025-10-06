@@ -1,20 +1,38 @@
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import FormSection from './FormSection.vue';
+import { getVehicles } from '../vehicles.js';
 
-// Example vehicle list — change or load dynamically as needed
-const vehicles = ref([
-  { id: 'veh1', label: 'Honda Civic (2018)' },
-  { id: 'veh2', label: 'Toyota Corolla (2020)' },
-  { id: 'veh3', label: 'Ford F-150 (2019)' },
-]);
+const router = useRouter();
+
+const vehicles = ref(getVehicles().map((v, index) => ({
+  id: `${index}`,
+  label: `${v.make || 'Unknown Make'} ${v.model || 'Unknown Model'} (${v.year || 'Unknown Year'})`,
+  raw: v
+}))); 
 
 const selectedVehicle = ref('');
+const issues = ref('');
+
+const onSubmit = (e) => {
+  e.preventDefault();
+  if (!selectedVehicle.value) return alert('Please select a vehicle');
+
+  // pass minimal data via query params (vehicle index and issues text)
+  router.push({
+    path: '/vehicle-help',
+    query: {
+      vehicleIndex: selectedVehicle.value,
+      issues: issues.value
+    }
+  })
+}
 </script>
 
 <template>
   <div class="form-container">
-    <form>
+  <form @submit.prevent="onSubmit">
       <!-- Select vehicle dropdown -->
       <div class="vehicle-select-group">
         <label for="select-vehicle" class="vehicle-label">Select vehicle</label>
@@ -24,7 +42,11 @@ const selectedVehicle = ref('');
         </select>
       </div>
 
-      <FormSection title="What's going on with your car?" required />
+      <FormSection
+        title="What's going on with your car?"
+        required
+        v-model="issues"
+      />
 
       <!-- Submit -->
       <button type="submit">Submit</button>
