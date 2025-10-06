@@ -2,11 +2,15 @@
 import NaviBar from "./NaviBar.vue";
 import { useRoute } from "vue-router";
 import { getResponse } from "../genai.js";
+import { getVehicles } from "@/vehicles";
 
 const route = useRoute();
 
-// all form data is available here
-const vehicle = route.query;
+// All form data is available here
+const details = route.query;
+const vehicles = getVehicles();
+const vehicle = vehicles[details.vehicleIndex] || {};
+const issues = details.issues || "No issues provided";
 
 const getFeedback = async () => {
   const prompt = `Provide feedback on the following vehicle information. Suggest any missing or potentially incorrect details that could improve the accuracy of a vehicle diagnosis. Be concise and specific.
@@ -19,6 +23,7 @@ Engine: ${formatField(vehicle.engine)}
 Transmission: ${formatField(vehicle.transmission)}
 Trim: ${formatField(vehicle.trim)}
 Body Style: ${formatField(vehicle.bodystyle)}
+Issues: ${formatField(issues)}
 
 Feedback:`;
   const response = await getResponse(prompt);
