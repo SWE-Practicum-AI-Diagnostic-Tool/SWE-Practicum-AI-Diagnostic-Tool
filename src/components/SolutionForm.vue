@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import FormSection from './FormSection.vue';
+import { getVehicles } from '../vehicles.js';
 
 // Example vehicle list — change or load dynamically as needed
 const vehicles = ref([
@@ -8,6 +9,11 @@ const vehicles = ref([
   { id: 'veh2', label: 'Toyota Corolla (2020)' },
   { id: 'veh3', label: 'Ford F-150 (2019)' },
 ]);
+
+// const vehicles = ref(getVehicles().map((v, index) => ({
+//   id: `veh${index + 1}`,
+//   label: `${v.make || 'Unknown Make'} ${v.model || 'Unknown Model'} (${v.year || 'Unknown Year'})`
+// })));
 
 const selectedVehicle = ref('');
 </script>

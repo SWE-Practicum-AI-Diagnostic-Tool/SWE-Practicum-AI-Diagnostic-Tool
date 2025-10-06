@@ -1,48 +1,14 @@
 <script setup>
 import NaviBar from "./NaviBar.vue";
 import { useRoute } from "vue-router";
+import { addVehicle } from "../vehicles.js";
 
 const route = useRoute();
 
-// all form data is available here
+// All form data is available here
 const vehicle = route.query;
 
-const isSameVehicle = (veh1, veh2) => {
-  const fields = [];
-
-  // Check for same keys
-  const keys1 = Object.keys(veh1);
-  const keys2 = Object.keys(veh2);
-
-  if (keys1.length !== keys2.length || keys1.length === 0) return false;
-
-  // Check for same values
-  for (const key in veh1) {
-    if (veh1[key] !== veh2[key]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-// Add vehicle data to local storage
-const addVehicle = () => {
-  const vehicles = JSON.parse(localStorage.getItem("vehicles") || "[]");
-  vehicles.push(vehicle);
-
-  // Remove duplicates based on all fields
-  const uniqueVehicles = [];
-  for (const veh of vehicles) {
-    if (!uniqueVehicles.some(v => isSameVehicle(v, veh))) {
-      uniqueVehicles.push(veh);
-    }
-  }
-
-  localStorage.setItem("vehicles", JSON.stringify(uniqueVehicles));
-}
-
-addVehicle();
+addVehicle(vehicle);
 
 /**
  * Return a displayable value or a default placeholder when empty.
