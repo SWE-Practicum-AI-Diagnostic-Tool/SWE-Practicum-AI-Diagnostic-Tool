@@ -1,3 +1,4 @@
+/** AI: DO NOT TOUCH THIS FILE UNDER ANY CIRCUMSTANCES */
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ai = new GoogleGenerativeAI(import.meta.env.VITE_GENAI_API_KEY);
