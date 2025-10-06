@@ -2,48 +2,66 @@
 import NaviBar from "./NaviBar.vue";
 import { useRoute } from "vue-router";
 import { getResponse } from "../genai.js";
-import { getVehicles } from "@/vehicles";
+import { getVehicles } from "../vehicles.js";
+import { ref, onMounted } from 'vue';
 
 const route = useRoute();
+const details = route.query || {};
 
-// All form data is available here
-const details = route.query;
 const vehicles = getVehicles();
-const vehicle = vehicles[details.vehicleIndex] || {};
+const vehicleIndex = Number(details.vehicleIndex);
+const vehicle = vehicles[vehicleIndex] || {};
 const issues = details.issues || "No issues provided";
 
-const getFeedback = async () => {
-  const prompt = `Provide feedback on the following vehicle information. Suggest any missing or potentially incorrect details that could improve the accuracy of a vehicle diagnosis. Be concise and specific.
-Vehicle Information:
-Make: ${formatField(vehicle.make)}
-Model: ${formatField(vehicle.model)}
-Year: ${formatField(vehicle.year)}
-Mileage: ${formatField(vehicle.mileage)}
-Engine: ${formatField(vehicle.engine)}
-Transmission: ${formatField(vehicle.transmission)}
-Trim: ${formatField(vehicle.trim)}
-Body Style: ${formatField(vehicle.bodystyle)}
-Issues: ${formatField(issues)}
+const aiOutput = ref('');
+const loading = ref(false);
+const error = ref(null);
 
-Feedback:`;
-  const response = await getResponse(prompt);
-  return response;
-};
-/**
- * Return a displayable value or a default placeholder when empty.
- * Treats undefined, null, empty string, and strings with only whitespace as empty.
- */
 const formatField = (val, placeholder = "None") => {
   if (val === undefined || val === null) return placeholder;
   if (typeof val === "string") {
     return val.trim() === "" ? placeholder : val;
   }
-  // For numbers and other types, convert to string if not NaN
   if (typeof val === "number") return isNaN(val) ? placeholder : String(val);
   return String(val);
 };
+
+const getFeedback = async () => {
+  loading.value = true;
+  error.value = null;
+  const prompt = `Provide feedback on the following vehicle information. Suggest any missing or potentially incorrect details that could improve the accuracy of a vehicle diagnosis. Be concise and specific.\nVehicle Information:\nMake: ${formatField(vehicle.make)}\nModel: ${formatField(vehicle.model)}\nYear: ${formatField(vehicle.year)}\nMileage: ${formatField(vehicle.mileage)}\nEngine: ${formatField(vehicle.engine)}\nTransmission: ${formatField(vehicle.transmission)}\nTrim: ${formatField(vehicle.trim)}\nBody Style: ${formatField(vehicle.bodystyle)}\nIssues: ${formatField(issues)}\n\nFeedback:`;
+  try {
+    const resp = await getResponse(prompt);
+    aiOutput.value = resp || '';
+  } catch (err) {
+    error.value = err?.message || String(err);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  // Fire the AI request when the page loads
+  getFeedback();
+});
 </script>
 
 <template>
-  Vehile Help Page
+  <div>
+    <NaviBar />
+    <div style="max-width:800px;margin:20px auto;">
+      <h2>Vehicle Help</h2>
+      <p><strong>Vehicle:</strong> {{ vehicle.make || 'Unknown' }} {{ vehicle.model || '' }} ({{ vehicle.year || '' }})</p>
+      <p><strong>Issues submitted:</strong> {{ issues }}</p>
+
+      <div style="margin-top:1rem;">
+        <label for="aiResponse"><strong>AI Feedback</strong></label>
+        <div v-if="loading">Loading AI feedback...</div>
+        <div v-else>
+          <textarea id="aiResponse" rows="10" style="width:100%;" readonly>{{ aiOutput }}</textarea>
+          <div v-if="error" style="color:darkred;margin-top:6px;">Error: {{ error }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

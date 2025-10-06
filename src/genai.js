@@ -8,12 +8,61 @@
 // usable during development. In production you should call a server
 // endpoint that uses the official SDK.
 
-async function getReponse(contents) {
+async function getResponse(contents) {
   // Running in a browser environment -> return a safe mocked response.
+  // The official @google/generative-ai SDK depends on Node primitives and will
+  // fail when bundled into a browser app, so short-circuit here when `window`
+  // exists (client-side execution).
   if (typeof window !== 'undefined') {
-    // Keep responses short and deterministic for the UI.
+    // If a Vite-provided API key is present, use it (INSECURE: key will be
+    // exposed to the client and should only be used for experimentation).
+    const clientKey = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GENAI_API_KEY : undefined;
     const text = typeof contents === 'string' ? contents : JSON.stringify(contents);
-    return `Mocked response (client): received ${text.slice(0, 200)}`;
+
+    if (clientKey) {
+      // Attempt a direct REST call to the Google Generative Language endpoint.
+      // NOTE: Many production Google APIs require OAuth/service-account auth;
+      // this approach works only if your key/account/project permits API-key access.
+      try {
+        const model = 'gemini-2.5-flash';
+        const url = `https://generativelanguage.googleapis.com/v1beta2/models/${encodeURIComponent(model)}:generateText?key=${encodeURIComponent(clientKey)}`;
+        const body = {
+          prompt: { text },
+          temperature: 0.2,
+          maxOutputTokens: 512
+        };
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!resp.ok) {
+          const errText = await resp.text();
+          console.warn('Generative API request failed:', resp.status, errText);
+          // Fall back to a mocked response so the UI remains usable.
+        } else {
+          const j = await resp.json();
+          // The REST response usually contains `candidates` with an `output` field.
+          const out = j?.candidates?.[0]?.output || j?.candidates?.[0]?.content || j?.output || j?.text;
+          if (typeof out === 'string') return out;
+          if (Array.isArray(out) && out.length) return out.join('\n');
+          if (j?.candidates && j.candidates.length && typeof j.candidates[0] === 'object') {
+            // Attempt to extract text-like fields
+            const cand = j.candidates[0];
+            return cand.output || cand.content || JSON.stringify(cand);
+          }
+        }
+      } catch (e) {
+        console.warn('Direct client-side generative call failed, using fallback:', e?.message || e);
+      }
+    }
+
+    // If no client key is present or the request failed, return a deterministic
+    // mocked response so the UI remains usable during development.
+    if (text.includes('Vehicle Information') || text.includes('Provide feedback on the following vehicle information')) {
+      return `No feedback available at this time.`;
+    }
+    return `No feedback available at this time.`;
   }
 
   // If this module is used server-side (SSR or a node endpoint), dynamically
@@ -21,7 +70,11 @@ async function getReponse(contents) {
   // bundling is explicit.
   try {
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
-    const apiKey = process?.env?.VITE_GENAI_API_KEY || process?.env?.GENAI_API_KEY || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GENAI_API_KEY);
+    // Guard access to `process` (it's not defined in browsers and will throw a
+    // ReferenceError if accessed directly). Use typeof checks so this code can be
+    // safely bundled for both server and build-time environments.
+    const apiKey = (typeof process !== 'undefined' && (process.env?.VITE_GENAI_API_KEY || process.env?.GENAI_API_KEY)) ||
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GENAI_API_KEY);
     const ai = new GoogleGenerativeAI(apiKey);
     const preferredModel = 'gemini-2.5-flash';
 
@@ -68,4 +121,4 @@ async function getReponse(contents) {
   }
 }
 
-export default getReponse;
+export { getResponse };

@@ -7,7 +7,7 @@ import SolutionForm from './components/SolutionForm.vue'
 import LoginView from './components/LoginPage.vue'
 import SupportPage from './components/Support.vue'
 import VehicleSubmit from './components/VehicleSubmit.vue'
-import VehicleHelp from './components/VehicleSubmit.vue'
+import VehicleHelp from './components/VehicleHelp.vue'
 
 const routes = [
   { path: '/', component: HomeView },
