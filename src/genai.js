@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ai = new GoogleGenerativeAI(import.meta.env.VITE_GENAI_API_KEY);
 
-async function getReponse(contents) {
+async function getResponse(contents) {
   const preferredModel = "gemini-2.5-flash";
 
   // Helper to extract text from a result object returned by the SDK
@@ -58,4 +58,4 @@ async function getReponse(contents) {
   }
 }
 
-export default getReponse;
+export { getResponse };
