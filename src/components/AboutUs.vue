@@ -10,7 +10,7 @@ const members = [
   { name: 'Konnor', photo: Connor, email: 'petersonk7465@my.uwstout.edu', linkedin: 'https://www.linkedin.com/in/konnor-peterson-265a7937b/' },
   { name: 'Emmett', photo: Emmett, email: 'jaakkolae7110@my.uwstout.edu', linkedin: 'https://www.linkedin.com/in/emmett-jaakkola-234667208/' },
   { name: 'Simon', photo: Simon, email: 'skrochs0971@my.uwstout.edu', linkedin: 'https://www.linkedin.com/in/simon-skroch-08922a298/' },
-  { name: 'Eli', photo: Eli, email: 'curle4271@my.uwstout.edu', linkedin: 'https://www.linkedin.com/in/eli' },
+  { name: 'Eli', photo: Eli, email: 'curle4271@my.uwstout.edu', linkedin: 'https://www.linkedin.com/in/eli-curl-2592022a2/' },
 ];
 
 function chunkArray(arr, size) {
