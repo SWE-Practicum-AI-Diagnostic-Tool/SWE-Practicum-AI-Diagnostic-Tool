@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "pinia": "^3.0.3",
-    "vue": "^3.3.4",
+    "@google/generative-ai": "^0.24.1",
+    "vue": "^3.5.18",
     "vue-router": "^4.5.1",
-    "vue3-google-login": "^2.0.34"
+    "vue3-google-login": "^2.0.34",
+    "vue3-google-signin": "^2.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
