@@ -1,14 +1,23 @@
 <script>
 import NaviBar from './NaviBar.vue'
 import { getResponse } from '../genai.js'
+import { useCookies } from "vue3-cookies";
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
+  setup() {
+    const { cookies } = useCookies();
+    return { cookies };
+  },
   components: { NaviBar },
+  name: 'Home',
   data() {
     return {
       inputValue: '',
       response: '',
-      loading: false
+      inputCookie: '',
+      loading: false,
+      my_cookie_value: ''
     }
   },
   methods: {
@@ -35,8 +44,12 @@ export default {
         this.loading = false;
       }
     }
+  },
+  mounted() {
+    let my_cookie_value = this.cookies.get("myCoookie");
+    console.log(my_cookie_value);
   }
-}
+})
 </script>
 
 <template>
@@ -47,6 +60,11 @@ export default {
   <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
       <div id="response">{{ response }}</div>
     </div>
+  <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
+  <button id="submit" @click="cookies.set('myCoookie', inputCookie)" :disabled="loading">{{ loading ? 'Loading...' : 'Set Cookie' }}</button>
+  </div>
+  <div>
+  Current Cookie Value: {{ cookies.get("myCoookie") }}
   </div>
 </template>
 
