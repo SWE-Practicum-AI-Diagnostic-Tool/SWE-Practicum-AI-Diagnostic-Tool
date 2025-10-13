@@ -1,19 +1,32 @@
 <template>
     <header class="navi-header">
         <div class="title">AI Diagnostic Tool</div>
+        <button @click="LoginPage">Login Status: {{loggedIn}}</button>
         <nav class="nav-buttons">
             <button @click="goToHome">Home</button>
-            <button @click="goToLogin">Login</button>
+            <button v-if="loggedIn" @click="goToLogin">Login</button>
+            <button v-if="!loggedIn" @click="goToProfile">Profile</button>
             <button @click="goToSupport">Contact Us!</button>
             <button @click="goToForm">New Vehicle</button>
             <button @click="goToManageSolutions">Manage Solutions</button>
-            
         </nav>
     </header>
 </template>
 
 <script>
-export default {
+import { useCookies } from "vue3-cookies";
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    setup() {
+        const { cookies } = useCookies();
+        return { cookies };
+    },
+    data(){
+        return{
+            loggedIn: this.cookies.get("ShowProfile") === "true" ? true : false
+        }
+    },
     methods: {
         goToSupport() {
             this.$router.push('/Support');
@@ -29,9 +42,23 @@ export default {
         },
         goToLogin(){
           this.$router.push('/Login')
+        },
+        goToProfile(){
+            this.$router.push('/Profile')
+        },
+        LoginPage(){
+            if(this.loggedIn == false)
+                this.cookies.set("ShowProfile", "true");
+            else{
+                this.cookies.set("ShowProfile", "false");
+            }
         }
     },
-};
+    mounted() {
+    let loggedIn = this.cookies.get("ShowProfile");
+    console.log(loggedIn);
+    }
+});
 </script>
 
 
