@@ -26,7 +26,7 @@ function handleSubmit() {
   console.log("Form submitted:", formData);
   // Navigate to VehicleHelp.vue with form info
   router.push({
-    path: '/vehicle-help',
+    path: '/vehicle-submit',
     query: { ...formData }   // spread the reactive object into query params
   });
 }
