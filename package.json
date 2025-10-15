@@ -14,10 +14,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "express": "^5.1.0",
-    "markdown-it": "^14.1.0",
-    "mongodb-memory-server": "^10.2.3",
-    "mongoose": "^8.19.1",
+    "mongodb": "^6.20.0",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "vue3-google-login": "^2.0.34",
