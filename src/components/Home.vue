@@ -17,7 +17,7 @@ export default defineComponent({
       response: '',
       inputCookie: '',
       loading: false,
-      my_cookie_value: ''
+      my_cookie_value: '',
     }
   },
   methods: {

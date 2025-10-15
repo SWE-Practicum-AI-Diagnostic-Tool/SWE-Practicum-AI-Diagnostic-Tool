@@ -8,6 +8,7 @@ import LoginView from './components/LoginPage.vue'
 import SupportPage from './components/Support.vue'
 import VehicleSubmit from './components/VehicleSubmit.vue'
 import VehicleHelp from './components/VehicleHelp.vue'
+import Profile from './components/Profile.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -17,7 +18,8 @@ const routes = [
   { path: '/Login', component: LoginView },
   { path: '/Support', component: SupportPage },
   { path: '/vehicle-submit', component: VehicleSubmit},
-  { path: '/vehicle-help', component: VehicleHelp}
+  { path: '/vehicle-help', component: VehicleHelp},
+  { path: '/profile', component: Profile}
 ]
 
 const router = createRouter({
