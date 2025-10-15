@@ -16,6 +16,7 @@ import { RouterLink } from 'vue-router';
           <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
           <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
           <li><RouterLink to="/service1" class="nav-link">Try it Out</RouterLink></li>
+          <li><RouterLink to="/profile" class="nav-link">Profile Test</RouterLink></li>
         </ul>
         <ul
           class="js-clone-nav 

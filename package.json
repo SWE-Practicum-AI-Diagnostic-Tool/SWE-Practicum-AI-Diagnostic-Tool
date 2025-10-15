@@ -1,5 +1,5 @@
 {
-  "name": "carit",
+  "name": "swe-practicum-ai-diagnostic-tool",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "markdown-it": "^14.1.0",
+    "pinia": "^3.0.3",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "vue3-cookies": "^1.0.6",
@@ -18,7 +19,7 @@
     "vue3-google-signin": "^2.1.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^5.2.10"
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^6.4.0"
   }
 }

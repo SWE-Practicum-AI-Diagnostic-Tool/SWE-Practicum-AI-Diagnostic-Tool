@@ -9,7 +9,7 @@ export default {
     return { cookies };
   },
   name: 'Profile',
-  components: { NaviBar },
+  components: {},
   data() {
     return {
       inputValue: '',
@@ -52,14 +52,10 @@ export default {
 </script>
 
 <template>
-    <div>
-        <NaviBar />
-        <h1>Profile Page</h1>
-        <p>This is the profile page.</p>
-
+    <div class="untree_co-home" id="home-section">
         <div class="home-body">
-  <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
-  <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
+          <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
+          <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
       <div id="response">{{ response }}</div>
     </div>
     </div>
@@ -88,5 +84,8 @@ button#submit {
   border: 1px solid #ddd;
   min-height: 40px;
   white-space: pre-wrap;
+}
+.move-down {
+  margin-top: 0px; /* moves it down by 50 pixels */
 }
 </style>

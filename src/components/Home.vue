@@ -51,11 +51,6 @@ const buttonTry = "Try it Out";
         </div>
       </div>
     </div>
-  <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
-  <button id="submit" @click="cookies.set('myCoookie', inputCookie)" :disabled="loading">{{ loading ? 'Loading...' : 'Set Cookie' }}</button>
-  </div>
-  <div>
-  Current Cookie Value: {{ cookies.get("myCoookie") }}
   </div>
 </template>
 
