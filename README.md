@@ -35,3 +35,6 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### MongoDB Database
+Go [here](https://cloud.mongodb.com/) to view the database.

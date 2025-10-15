@@ -1,60 +1,43 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoClient, ServerApiVersion } from 'mongodb';
+
+const uri = "mongodb+srv://Alek_db_user:Thisisaverysecurepassword1!@ai-diagnostic-tool-proj.njtobnl.mongodb.net/?retryWrites=true&w=majority&appName=AI-Diagnostic-Tool-Project"; // Keep the one that already worked
 
 const app = express();
 
-let mongod;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
-async function startDatabase() {
-  // Start a local MongoDB instance
-  // The dbName is the name of the database you want to use
-  // The dbPath is where the data is stored in the file system
-  mongod = await MongoMemoryServer.create({
-    instance: {
-      dbName: 'localdb',
-      dbPath: './data/mongodb',
-      port: 27017,
-    },
-  });
+async function run() {
+  try {
+    await client.connect();
 
-  const uri = mongod.getUri();
-  await mongoose.connect(uri);
-  console.log('✅ MongoDB connected at', uri);
-}
+    const db = client.db("sample_mflix");           // <— your database
+    const collection = db.collection("movies");     // <— pick any collection
 
-async function stopDatabase() {
-  if (mongod) {
-    await mongoose.connection.close();
-    await mongod.stop();
-    console.log('🛑 MongoDB stopped');
+    // Fetch first 5 movies
+    const movies = await collection.find().limit(5).toArray();
+
+    console.log("🎬 Sample Movies:");
+    console.log(movies);
+
+    app.get('/', (req, res) => {
+      res.send('Server is running!')
+    })
+
+    // Connect to server
+    const server = app.listen(3000, () => console.log('🚀 Server on http://localhost:3000'));
+
+  } catch (error) {
+    console.error("❌ Error reading data:", error);
+  } finally {
+    await client.close();
   }
 }
 
-async function startServer() {
-  await startDatabase();
-
-  // Example schema + route
-  const User = mongoose.model('User', new mongoose.Schema({ name: String }));
-
-  app.get('/users', async (_, res) => {
-    const users = await User.find();
-    res.json(users);
-  });
-
-  app.post('/users/:name', async (req, res) => {
-    const user = new User({ name: req.params.name });
-    await user.save();
-    res.send('✅ User added');
-  });
-
-  const server = app.listen(3000, () => console.log('🚀 Server on http://localhost:3000'));
-
-  // Stop database when Node exits
-  process.on('SIGINT', async () => {
-    await stopDatabase();
-    server.close(() => process.exit(0));
-  });
-}
-
-startServer();
+run();
