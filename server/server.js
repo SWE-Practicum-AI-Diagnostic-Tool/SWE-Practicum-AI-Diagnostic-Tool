@@ -2,42 +2,59 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
-// Express is a package for building HTTP servers
 const app = express();
 
-async function getUsers() {
-  const UserSchema = new mongoose.Schema({
-    id_token: String
-  });
-  const User = mongoose.model('User', UserSchema, 'User');
+let mongod;
 
-  return await User.find();
-}
-
-async function start() {
+async function startDatabase() {
   // Start a local MongoDB instance
   // The dbName is the name of the database you want to use
   // The dbPath is where the data is stored in the file system
-  const mongod = await MongoMemoryServer.create({
+  mongod = await MongoMemoryServer.create({
     instance: {
+      dbName: 'localdb',
+      dbPath: './data/mongodb',
       port: 27017,
-      dbName: 'local',
-      dbPath: './data/mongodb'
-    }
+    },
   });
 
-  // Connect to the local MongoDB instance
   const uri = mongod.getUri();
   await mongoose.connect(uri);
-  console.log('✅ MongoDB started and connected!');
-
-  console.log(await getUsers());
-
-  // Define routes
-  app.get('/', (_, res) => res.send('MongoDB is running!'));
-
-  // Start the server
-  app.listen(3000, () => console.log('🚀 Server on http://localhost:3000'));
+  console.log('✅ MongoDB connected at', uri);
 }
 
-start();
+async function stopDatabase() {
+  if (mongod) {
+    await mongoose.connection.close();
+    await mongod.stop();
+    console.log('🛑 MongoDB stopped');
+  }
+}
+
+async function startServer() {
+  await startDatabase();
+
+  // Example schema + route
+  const User = mongoose.model('User', new mongoose.Schema({ name: String }));
+
+  app.get('/users', async (_, res) => {
+    const users = await User.find();
+    res.json(users);
+  });
+
+  app.post('/users/:name', async (req, res) => {
+    const user = new User({ name: req.params.name });
+    await user.save();
+    res.send('✅ User added');
+  });
+
+  const server = app.listen(3000, () => console.log('🚀 Server on http://localhost:3000'));
+
+  // Stop database when Node exits
+  process.on('SIGINT', async () => {
+    await stopDatabase();
+    server.close(() => process.exit(0));
+  });
+}
+
+startServer();
