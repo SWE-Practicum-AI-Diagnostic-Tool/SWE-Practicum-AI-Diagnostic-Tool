@@ -52,16 +52,18 @@ export default {
 </script>
 
 <template>
-    <div class="untree_co-home" id="home-section">
-        <div class="home-body">
+    <div class="untree_co-section" data-aos="fade-up" data-aos-delay="0">
+        <div class="home-body" >
           <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
           <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
       <div id="response">{{ response }}</div>
     </div>
     </div>
+    <div data-aos="fade-up" data-aos-delay="500">
     <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
   <button id="submit" @click="cookies.set('myCoookie', inputCookie)" :disabled="loading">{{ loading ? 'Loading...' : 'Set Cookie' }}</button>
-  <div>
+  </div>
+  <div data-aos="fade-up" data-aos-delay="500">
   Current Cookie Value: {{ cookies.get("myCoookie") }}
   </div>
 </template>
