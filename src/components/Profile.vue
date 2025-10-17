@@ -2,8 +2,9 @@
 import NaviBar from './NaviBar.vue';
 import { getResponse } from '../genai.js'
 import { useCookies } from "vue3-cookies";
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   setup() {
     const { cookies } = useCookies();
     return { cookies };
@@ -17,6 +18,8 @@ export default {
       inputCookie: '',
       loading: false,
       my_cookie_value: '',
+      editMode: false,
+      NewName: this.cookies.get("profileName") || ''
     }
   },
   methods: {
@@ -42,13 +45,23 @@ export default {
       } finally {
         this.loading = false;
       }
-    }
+    },
+    saveProfile(string) {
+      // Placeholder function to save profile changes
+      console.log('Profile saved as: ' + string);
+      this.cookies.set("profileName", string, "7d");
+    },
+    editPage() {
+      this.editMode = !this.editMode;
+      if(!this.editMode)
+        this.saveProfile(this.NewName);
+    },
   },
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
   }
-};
+});
 </script>
 
 <template>
@@ -59,12 +72,35 @@ export default {
       <div id="response">{{ response }}</div>
     </div>
     </div>
-    <div data-aos="fade-up" data-aos-delay="500">
+    <div data-aos="fade-up" data-aos-delay="0">
     <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
-  <button id="submit" @click="cookies.set('myCoookie', inputCookie)" :disabled="loading">{{ loading ? 'Loading...' : 'Set Cookie' }}</button>
+  <button id="submit" @click="cookies.set('myCoookie', inputCookie)">Set Cookie</button>
   </div>
-  <div data-aos="fade-up" data-aos-delay="500">
+  <div data-aos="fade-up" data-aos-delay="0">
   Current Cookie Value: {{ cookies.get("myCoookie") }}
+  </div>
+  <div class="untree_co-section" id="about-section">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
+          <h2 class="heading">Profile Page</h2>
+          <p>This is the profile page.</p>
+        </div>
+      </div>
+      <div data-aos="fade-up" data-aos-delay="0">
+        <img src="" alt="Profile Image" />
+        <p>Pofile Name: </p>
+        <div>
+          <p v-if="!editMode">{{ NewName }}</p>
+          <input v-if="editMode" v-model="NewName" type="text" placeholder="Enter your name" />
+        </div>
+        <p>Email: </p>
+        <div>
+          <p>Email Goes Here</p>
+        </div>
+        <button v-on:click="editPage()">Edit Profile</button>
+      </div>
+    </div>
   </div>
 </template>
 
