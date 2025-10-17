@@ -1,5 +1,4 @@
 <script>
-import NaviBar from './NaviBar.vue';
 import { getResponse } from '../genai.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';

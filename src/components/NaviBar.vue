@@ -1,6 +1,7 @@
 <script setup>
 import { themeColor, siteName } from "../data/items";
 import { RouterLink } from 'vue-router';
+import { useCookies } from 'vue3-cookies';
 </script>
 <template>
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
@@ -22,9 +23,9 @@ import { RouterLink } from 'vue-router';
           class="js-clone-nav 
           -none mt-1 d-lg-inline-block site-menu float-right"
         >
-          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink to="/login">Login</RouterLink></li>
+          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink v-if="!loggedIn" to="/login">Login</RouterLink></li>
           <li class="cta-primary">
-            <a href="#" :style="[{ backgroundColor: themeColor }]">Register</a>
+            <RouterLink v-if="!loggedIn" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
           </li>
         </ul>
         <a
@@ -39,3 +40,26 @@ import { RouterLink } from 'vue-router';
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  setup() {
+    const { cookies } = useCookies();
+    return { cookies };
+  },
+  data() {
+    return {
+      loggedIn: false,
+    }
+  },
+  mounted() {
+    if(this.cookies.get("loggedIn"))
+      this.loggedIn = true;
+    else{
+      this.loggedIn = false;
+    }
+    this.cookies.set("loggedIn", this.loggedIn);
+    console.log(loggedIn);
+  }
+}
+</script>

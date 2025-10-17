@@ -10,6 +10,7 @@ import ProblemDesc from './components/ProblemDesc.vue';
 import Features from './components/Features.vue';
 import Login from './components/Login.vue';
 import AboutUs from './components/AboutUs.vue';
+import Register from './components/NewUser.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -21,7 +22,8 @@ const routes = [
   { path: '/form', component: FormView },
   { path: '/vehicle-submit', component: VehicleSubmit},
   { path: '/vehicle-help', component: VehicleHelp},
-  { path: '/profile', component: Profile}
+  { path: '/profile', component: Profile},
+  { path: '/register', component: Register}
 ];
 
 const router = createRouter({
