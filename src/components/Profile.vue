@@ -64,7 +64,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="untree_co-section" data-aos="fade-up" data-aos-delay="0">
+    <!-- <div class="untree_co-section" data-aos="fade-up" data-aos-delay="0">
         <div class="home-body" >
           <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
           <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
@@ -77,7 +77,7 @@ export default defineComponent({
   </div>
   <div data-aos="fade-up" data-aos-delay="0">
   Current Cookie Value: {{ cookies.get("myCoookie") }}
-  </div>
+  </div> -->
   <div class="untree_co-section" id="about-section">
     <div class="container">
       <div class="row mb-4">

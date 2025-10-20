@@ -99,7 +99,7 @@ export default {
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 350px;
+  width: 550px;
   text-align: center;
   margin-top: 100px;
   margin-bottom: 25px;
