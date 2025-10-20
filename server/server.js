@@ -1,9 +1,12 @@
-import express from 'express';
+// import express from 'express';
 import { MongoClient, ServerApiVersion } from 'mongodb';
+import dotenv from 'dotenv';
 
-const uri = "mongodb+srv://Alek_db_user:Thisisaverysecurepassword1!@ai-diagnostic-tool-proj.njtobnl.mongodb.net/?retryWrites=true&w=majority&appName=AI-Diagnostic-Tool-Project"; // Keep the one that already worked
+dotenv.config(); // loads .env file into process.env
 
-const app = express();
+const uri = process.env.MONGODB_URI;
+
+// const app = express();
 
 const client = new MongoClient(uri, {
   serverApi: {
