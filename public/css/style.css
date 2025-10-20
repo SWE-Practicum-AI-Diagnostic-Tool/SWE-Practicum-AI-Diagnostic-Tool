@@ -503,37 +503,33 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
 .burger:focus {
   outline: none; }
 
-.untree_co-hero, .untree_co-hero > .container > .row {
+.untree_co-home, .untree_co-home > .container > .row {
   /* keep top padding only; remove bottom padding so content won't push page height */
   padding: 4rem 0 0 0;
-  /* make hero occupy viewport height (subtract header height if needed).
-     Adjust the 80px value if your header is a different height. */
+  /* make home occupy viewport height (subtract header height if needed).
+    Adjust the 80px value if your header is a different height. */
   min-height: calc(100vh - 80px);
   box-sizing: border-box;
   /* allow content to overflow so interactive elements (buttons) are not clipped */
   overflow: visible; }
 
-@media (max-width: 991.98px) {
-  .untree_co-hero {
-    text-align: center; } }
-
-.untree_co-hero .heading {
+.untree_co-home .heading {
   font-size: 70px;
   line-height: 1;
   font-weight: 700;
   color: #000000;
   margin-bottom: 30px; }
   @media (max-width: 991.98px) {
-    .untree_co-hero .heading {
+    .untree_co-home .heading {
       font-size: 50px; } }
 
-.untree_co-hero .dots {
+.untree_co-home .dots {
   position: absolute;
   width: 100%;
   /* reduced from 200% to 100% so it doesn't force extra page height */
   height: 100%;
   pointer-events: none; }
-  .untree_co-hero .dots:before {
+  .untree_co-home .dots:before {
     z-index: -1;
     right: 0;
     -webkit-transform: translateX(60%);
@@ -545,7 +541,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
     height: 264px;
     background: url("../images/dots.png") right top; }
 
-.untree_co-hero .excerpt {
+.untree_co-home .excerpt {
   margin-bottom: 30px; }
 
 .untree_co-section {

@@ -1,6 +1,4 @@
 <template>
-  <NaviBar />
-
   <div class="login-container">
     <div class="login-card">
       <h1>Login</h1>
@@ -45,7 +43,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import NaviBar from './NaviBar.vue'
 
 const router = useRouter()
 const email = ref('')

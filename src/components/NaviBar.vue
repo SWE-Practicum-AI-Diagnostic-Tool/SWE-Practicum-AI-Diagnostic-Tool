@@ -1,63 +1,41 @@
-<template>
-    <header class="navi-header">
-        <div class="title">AI Diagnostic Tool</div>
-        <nav class="nav-buttons">
-            <button @click="goToHome">Home</button>
-            <button @click="goToLogin">Login</button>
-            <button @click="goToSupport">Support</button>
-            <button @click="goToForm">New Vehicle</button>
-            <button @click="goToManageSolutions">Manage Solutions</button>
-            
-        </nav>
-    </header>
-</template>
-
-<script>
-export default {
-    methods: {
-        goToSupport() {},
-        goToHome() {
-            this.$router.push('/');
-        },
-        goToForm() {
-            this.$router.push('/form');
-        },
-        goToManageSolutions() {
-            this.$router.push('/manage-solutions');
-        },
-        goToLogin(){
-          this.$router.push('/Login')
-        }
-    },
-};
+<script setup>
+import { themeColor, siteName } from "../data/items";
+import { RouterLink } from 'vue-router';
 </script>
-
-
-<style scoped>
-/* Horizontal button layout */
-.navi-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    gap: 1rem;
-}
-.title {
-    font-weight: 600;
-}
-.nav-buttons {
-    display: flex;
-    gap: 0.5rem; /* spacing between buttons */
-    align-items: center;
-}
-.nav-buttons button {
-    padding: 0.4rem 0.75rem;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-    border-radius: 4px;
-}
-.nav-buttons button:hover {
-    background: #f2f2f2;
-}
-</style>
+<template>
+  <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
+    <div class="container">
+      <div class="site-navigation">
+        <RouterLink to="/" class="logo m-0 float-left">
+          {{ siteName }}<span class="text-primary">.</span>
+        </RouterLink>
+        <ul class="js-clone-nav d-none d-lg-inline-block site-menu float-left">
+          <li class="active">
+            <RouterLink to="/" class="nav-link">Home</RouterLink>
+          </li>
+          <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
+          <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
+          <li><RouterLink to="/service1" class="nav-link">Try it Out</RouterLink></li>
+          <li><RouterLink to="/profile" class="nav-link">Profile Test</RouterLink></li>
+        </ul>
+        <ul
+          class="js-clone-nav 
+          -none mt-1 d-lg-inline-block site-menu float-right"
+        >
+          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink to="/login">Login</RouterLink></li>
+          <li class="cta-primary">
+            <a href="#" :style="[{ backgroundColor: themeColor }]">Register</a>
+          </li>
+        </ul>
+        <a
+          href="#"
+          class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block dark d-lg-none"
+          data-toggle="collapse"
+          data-target="#main-navbar"
+        >
+          <span></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</template>

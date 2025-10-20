@@ -1,22 +1,32 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
-import HomeView from './components/Home.vue'
-import FormView from './components/Form.vue'
-import ManageSolutions from './components/ManageSolutions.vue'
-import SolutionForm from './components/SolutionForm.vue'
-import LoginView from './components/LoginPage.vue'
+import FormView from './components/Form.vue';
+import VehicleSubmit from './components/VehicleSubmit.vue';
+import VehicleHelp from './components/VehicleHelp.vue';
+import Profile from './components/Profile.vue';
+import Home from './components/Home.vue';
+import VehicleInfo from './components/VehicleInfo.vue';
+import ProblemDesc from './components/ProblemDesc.vue';
+import Features from './components/Features.vue';
+import Login from './components/Login.vue';
+import AboutUs from './components/AboutUs.vue';
 
 const routes = [
-  { path: '/', component: HomeView },
+  { path: '/', name: 'Home', component: Home },
+  { path: '/service1', name: 'Service1', component: VehicleInfo },
+  { path: '/problemdescription', name: 'ProblemDescription', component: ProblemDesc },
+  { path: '/features', name: 'Features', component: Features },
+  { path: '/login', name: 'Login', component: Login },
+  { path: '/aboutus', name: 'AboutUs', component: AboutUs },
   { path: '/form', component: FormView },
-  { path: '/manage-solutions', component: ManageSolutions },
-  { path: '/solution-form', component: SolutionForm },
-  { path: '/Login', component: LoginView }
-]
+  { path: '/vehicle-submit', component: VehicleSubmit},
+  { path: '/vehicle-help', component: VehicleHelp},
+  { path: '/profile', component: Profile}
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+});
 
-export default router
+export default router;

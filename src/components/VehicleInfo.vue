@@ -27,7 +27,7 @@ const CARQUERY_BASE = "https://www.carqueryapi.com/api/0.3";
 async function fetchCarQueryJsonp(url) {
   // DEVELOPMENT: Use CORS proxy for browser fetches
   // PRODUCTION: Use your own backend proxy for security and reliability
-  const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url + '&callback=?')}`;
+  const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(url + '&callback=?')}`;
   const resp = await fetch(proxiedUrl);
   const text = await resp.text();
 // Remove JSONP wrapper: ?({...}); or ?({...})
