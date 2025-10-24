@@ -18,7 +18,9 @@ export default defineComponent({
       loading: false,
       my_cookie_value: '',
       editMode: false,
-      NewName: this.cookies.get("profileName") || ''
+      NewName: this.cookies.get("profileName") || '',
+      crashingOut: this.cookies.get("crashOut") || 0,
+      isShaking: false,
     }
   },
   methods: {
@@ -55,10 +57,24 @@ export default defineComponent({
       if(!this.editMode)
         this.saveProfile(this.NewName);
     },
+    crashOut() {
+      this.crashingOut = Number(this.crashingOut) + 1;
+      this.cookies.set("crashOut", this.crashingOut, "7d");
+      //console.log("Crashouts: " + this.crashingOut);
+      this.triggerEffect();
+    },
+    triggerEffect() {
+      this.isShaking = true;
+      setTimeout(() => {
+        this.isShaking = false;
+      }, 1000); // Effect lasts for 1 second
+    },
   },
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
+    let crashingOut = this.cookies.get("crashOut");
+    console.log("Crashout value: " + crashingOut);
   }
 });
 </script>
@@ -79,6 +95,7 @@ export default defineComponent({
   Current Cookie Value: {{ cookies.get("myCoookie") }}
   </div> -->
   <div class="untree_co-section" id="about-section">
+    <div :class="{ shake: isShaking }">
     <div class="container">
       <div class="row mb-4">
         <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
@@ -98,7 +115,10 @@ export default defineComponent({
           <p>Email Goes Here</p>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>
+        <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
+        <h1>Crashouts: {{ crashingOut }}</h1>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -124,5 +144,16 @@ button#submit {
 }
 .move-down {
   margin-top: 0px; /* moves it down by 50 pixels */
+}
+
+.shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 </style>
