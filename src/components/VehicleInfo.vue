@@ -1,6 +1,6 @@
 <script setup>
 import { themeColor } from "../data/items";
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useVehicleStore } from '../stores/vehicle';
 
 const service1SubHeading = "Start by entering your vehicle information";
@@ -11,6 +11,7 @@ const make = ref("");
 const model = ref("");
 const trim = ref("");
 
+const route = useRoute();
 const router = useRouter();
 const vehicleStore = useVehicleStore();
 
@@ -118,7 +119,15 @@ function submitVehicle() {
     model: model.value,
     trim: trim.value
   });
-  router.push('/problemdescription');
+  router.push({
+    path: '/problemdescription',
+    query: {
+      year: year.value,
+      make: make.value,
+      model: model.value,
+      trim: trim.value
+    }
+  });
 }
 
 </script>
