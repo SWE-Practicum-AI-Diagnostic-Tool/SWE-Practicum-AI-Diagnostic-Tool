@@ -40,10 +40,10 @@ const json = text.replace(/^\?\((.*)\);?$/, '$1');
   }
 }
 
-// Generate years (1990 to current)
+// Generate years (1970 to current)
 function fetchYears() {
   const current = new Date().getFullYear();
-  const start = 1990;
+  const start = 1970;
   years.value = Array.from({ length: current - start + 1 }, (_, i) => (current - i).toString());
 }
 
