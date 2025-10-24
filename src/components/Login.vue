@@ -31,16 +31,17 @@
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <!-- Submit -->
-        <button type="submit">Log In</button>
+        <button type="submit" v-on:click="store.updateLoggedInStatus(true)">Log In</button>
       </form>
       <div style="margin-top: 1rem;">
-        <GoogleLogin :callback="handleGoogleLogin" @error="handleGoogleError" />
+        <!-- <GoogleLogin :callback="handleGoogleLogin" @error="handleGoogleError" /> -->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { store } from '../store.js'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
