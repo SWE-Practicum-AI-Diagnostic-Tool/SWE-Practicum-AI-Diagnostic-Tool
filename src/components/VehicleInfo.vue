@@ -106,8 +106,6 @@ watch(model, (val) => {
   fetchTrims(year.value, make.value, val);
 });
 
-// No engine watcher needed
-
 onMounted(() => {
   fetchYears();
 });
