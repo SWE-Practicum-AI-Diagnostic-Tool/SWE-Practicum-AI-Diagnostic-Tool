@@ -32,6 +32,7 @@ async function login() {
     await auth0Client.loginWithPopup()
     user.value = await auth0Client.getUser()
     isAuthenticated.value = true
+    createUser();
     console.log("Logged in as:", user.value.name)
   } catch (err) {
     isAuthenticated.value = false
@@ -46,27 +47,18 @@ async function logout() {
   })
 }
 
-// Test protected API
-async function testApi() {
-  console.log("Testing protected API...")
-  console.log(import.meta.env.VITE_AUTH0_AUDIENCE)
-  
-  // When getting the token
+// Create account
+async function createUser() {
   const token = await auth0Client.getTokenSilently({
-    audience: import.meta.env.VITE_AUTH0_AUDIENCE, // <-- Also specify here
+    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+    scope: 'openid profile email',
+  });
+  
+  const res = await axios.get('http://localhost:3000/api/create-user', {
+    headers: { authorization: `Bearer ${token}` },
   });
 
-  console.log(token)
-  
-  try {
-    const res = await axios.get('http://localhost:3000/api/protected', {
-      headers: { authorization: `Bearer ${token}` },
-    })
-    apiResponse.value = res.data.message
-    console.log(res.data)
-  } catch (err) {
-    apiResponse.value = `Error ${err.response?.data || err.message}`
-  }
+  console.log(res.data);
 }
 </script>
 
@@ -83,9 +75,6 @@ async function testApi() {
         <p>✅ Logged in as <strong>{{ user.name }}</strong></p>
         <button @click="logout">Logout</button>
       </div>
-
-      <button @click="testApi" :disabled="!isAuthenticated">Test Protected API</button>
-      <p v-if="apiResponse" style="margin-top: 10px;">{{ apiResponse }}</p>
     </div>
   </div>
 </template>

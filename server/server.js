@@ -8,6 +8,10 @@ import cors from 'cors';
 dotenv.config(); // loads .env file into process.env
 
 const uri = process.env.MONGODB_URI;
+const DATABASE = "ProjectDataBase";
+const USER_COLLECTION = "Users";
+
+console.log(uri);
 
 const app = express();
 
@@ -30,13 +34,44 @@ const client = new MongoClient(uri, {
   }
 });
 
+async function userExists(userid) {
+  // Check if a user exists using the MongoClient
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const res = await collection.findOne({ _id: userid });
+  return res;
+}
+
+async function createUser(userid, name) {
+  if (await userExists(userid)) {
+    console.log("User already exists:", userid);
+    return false;
+  }
+
+  // Create a user using the MongoClient
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const user = { _id: userid, name: name };
+  await collection.insertOne(user);
+  
+  console.log("User created:", user);
+  
+  return true
+}
+
 function startServer() {
   app.get('/', (req, res) => {
     res.send('Server is running!');
   });
 
-  app.get('/api/protected', validateAuth, (req, res) => {
-    res.send('Protected route');
+  app.get('/api/create-user', validateAuth, async (req, res) => {
+    const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
+      headers: { authorization: req.headers.authorization },
+    });
+    
+    const user = await response.json();
+    
+    const created = await createUser(user.sub, user.name);
+
+    res.send(created ? "User created" : "User already exists");
   });
 
   app.listen(3000, () => {
