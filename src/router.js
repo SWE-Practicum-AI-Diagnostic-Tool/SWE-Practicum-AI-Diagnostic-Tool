@@ -8,7 +8,7 @@ import Home from './components/Home.vue';
 import VehicleInfo from './components/VehicleInfo.vue';
 import ProblemDesc from './components/ProblemDesc.vue';
 import Features from './components/Features.vue';
-import Login from './components/Login.vue';
+import Login from './components/Login2.vue';
 import AboutUs from './components/AboutUs.vue';
 
 const routes = [
