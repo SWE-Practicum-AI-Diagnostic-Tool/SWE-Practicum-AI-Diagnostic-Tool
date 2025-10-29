@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { createAuth0Client } from '@auth0/auth0-spa-js'
 import axios from 'axios'
+import { store } from '../store.js'
 
 const isAuthenticated = ref(false)
 const user = ref({})
@@ -33,7 +34,8 @@ async function login() {
     user.value = await auth0Client.getUser()
     isAuthenticated.value = true
     createUser();
-    console.log("Logged in as:", user.value.name)
+    console.log("Logged in as:", user.value.name);
+    store.updateLoggedInStatus(true);
   } catch (err) {
     isAuthenticated.value = false
     console.error("Login failed:", err)
@@ -45,6 +47,7 @@ async function logout() {
   await auth0Client.logout({
     logoutParams: { returnTo: window.location.origin },
   })
+  store.updateLoggedInStatus(false)
 }
 
 // Create account

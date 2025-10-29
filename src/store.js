@@ -5,6 +5,7 @@ const { cookies } = useCookies();
 
 export const store = reactive({
   loggedIn: cookies.get('loggedIn') === 'true',
+  logID: cookies.get('logID') || null,
 
   updateLoggedInStatus(status) {
     store.loggedIn = status;
@@ -13,5 +14,9 @@ export const store = reactive({
   logOut(){
     store.loggedIn = false;
     cookies.set('loggedIn', false);
+  },
+  setLoginID(loggedID){
+    store.logID = loggedID;
+    cookies.set('logID', logID);
   }
 })
