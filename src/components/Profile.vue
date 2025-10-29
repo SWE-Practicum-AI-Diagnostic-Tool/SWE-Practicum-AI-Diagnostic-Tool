@@ -21,6 +21,7 @@ export default defineComponent({
       NewName: this.cookies.get("profileName") || '',
       crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
+      Email: '@example.com',
     }
   },
   methods: {
@@ -112,7 +113,7 @@ export default defineComponent({
         </div>
         <p>Email: </p>
         <div>
-          <p>Email Goes Here</p>
+          <p> {{ Email }}</p>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>

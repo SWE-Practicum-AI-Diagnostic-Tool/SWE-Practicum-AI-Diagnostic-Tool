@@ -22,11 +22,15 @@ import { store } from '../store.js'
           class="js-clone-nav 
           -none mt-1 d-lg-inline-block site-menu float-right"
         >
-          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink v-if="!lI" to="/login">Login</RouterLink></li>
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="!lI" to="/login">Login</RouterLink>
+          </li>
           <li class="cta-primary">
             <RouterLink v-if="!lI" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
           </li>
-          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink v-if="lI" to="/profile" class="nav-link">Profile Test</RouterLink></li>
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="lI" to="/profile" class="nav-link">Profile Test</RouterLink>
+          </li>
           <li class="cta-primary">
             <RouterLink v-if="lI" @click="store.logOut()" to="/" :style="[{ backgroundColor: themeColor }]">log Out</RouterLink>
           </li>

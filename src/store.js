@@ -3,6 +3,7 @@ import { useCookies } from 'vue3-cookies';
 
 const { cookies } = useCookies();
 
+// Gives reactivity to frontend when logged in or logging out
 export const store = reactive({
   loggedIn: cookies.get('loggedIn') === 'true',
   logID: cookies.get('logID') || null,

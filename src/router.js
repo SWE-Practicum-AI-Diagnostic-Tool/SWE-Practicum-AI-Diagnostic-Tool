@@ -12,6 +12,7 @@ import Login from './components/Login2.vue';
 import AboutUs from './components/AboutUs.vue';
 import Register from './components/NewUser.vue';
 
+// Set up routes that are going to be used by RouterView
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/service1', name: 'Service1', component: VehicleInfo },
