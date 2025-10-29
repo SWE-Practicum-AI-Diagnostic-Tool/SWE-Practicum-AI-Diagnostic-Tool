@@ -10,6 +10,7 @@ const year = ref("");
 const make = ref("");
 const model = ref("");
 const trim = ref("");
+const customVehicle = ref(false);
 
 const route = useRoute();
 const router = useRouter();
@@ -41,11 +42,11 @@ const json = text.replace(/^\?\((.*)\);?$/, '$1');
   }
 }
 
-// Generate years (1970 to current)
+// Generate years (1970 to 2022)
 function fetchYears() {
-  const current = new Date().getFullYear();
-  const start = 1970;
-  years.value = Array.from({ length: current - start + 1 }, (_, i) => (current - i).toString());
+  const endYear = 2022;
+  const startYear = 1990;
+  years.value = Array.from({ length: endYear - startYear + 1 }, (_, i) => (endYear - i).toString());
 }
 
 // Fetch makes for a given year
@@ -89,6 +90,8 @@ async function fetchTrims(y, mk, mdl) {
 
 // watchers
 watch(year, (val) => {
+  // If user is entering a custom vehicle, don't trigger remote lookups
+  if (customVehicle.value) return;
   make.value = "";
   model.value = "";
   trim.value = "";
@@ -96,12 +99,14 @@ watch(year, (val) => {
 });
 
 watch(make, (val) => {
+  if (customVehicle.value) return;
   model.value = "";
   trim.value = "";
   fetchModels(year.value, val);
 });
 
 watch(model, (val) => {
+  if (customVehicle.value) return;
   trim.value = "";
   fetchTrims(year.value, make.value, val);
 });
@@ -126,6 +131,20 @@ function submitVehicle() {
       trim: trim.value
     }
   });
+}
+
+function toggleCustomVehicle() {
+  customVehicle.value = !customVehicle.value;
+  // If switching to custom, clear dropdown lists to avoid confusion
+  if (customVehicle.value) {
+    makes.value = [];
+    models.value = [];
+    trims.value = [];
+  } else {
+    // If returning to selector mode, refresh years/makes if possible
+    fetchYears();
+    if (year.value) fetchMakes(year.value);
+  }
 }
 
 </script>
@@ -168,31 +187,57 @@ function submitVehicle() {
 
             <div class="mb-2 form-row">
               <label class="form-label">Year</label>
-              <select v-model="year" class="form-select form-select-inline">
-                <option value="">-- Select Year --</option>
-                <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-              </select>
+              <template v-if="!customVehicle">
+                <select v-model="year" class="form-select form-select-inline">
+                  <option value="">-- Select Year --</option>
+                  <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+                </select>
+              </template>
+              <template v-else>
+                <input v-model="year" type="text" class="form-control form-select-inline" placeholder="e.g. 2020" />
+              </template>
             </div>
             <div class="mb-2 form-row">
               <label class="form-label">Make</label>
-              <select v-model="make" class="form-select form-select-inline" :disabled="!year">
-                <option value="">-- Select Make --</option>
-                <option v-for="m in makes" :key="m" :value="m">{{ m }}</option>
-              </select>
+              <template v-if="!customVehicle">
+                <select v-model="make" class="form-select form-select-inline" :disabled="!year">
+                  <option value="">-- Select Make --</option>
+                  <option v-for="m in makes" :key="m" :value="m">{{ m }}</option>
+                </select>
+              </template>
+              <template v-else>
+                <input v-model="make" type="text" class="form-control form-select-inline" placeholder="e.g. Toyota" />
+              </template>
             </div>
             <div class="mb-2 form-row">
               <label class="form-label">Model</label>
-              <select v-model="model" class="form-select form-select-inline" :disabled="!make">
-                <option value="">-- Select Model --</option>
-                <option v-for="m in models" :key="m" :value="m">{{ m }}</option>
-              </select>
+              <template v-if="!customVehicle">
+                <select v-model="model" class="form-select form-select-inline" :disabled="!make">
+                  <option value="">-- Select Model --</option>
+                  <option v-for="m in models" :key="m" :value="m">{{ m }}</option>
+                </select>
+              </template>
+              <template v-else>
+                <input v-model="model" type="text" class="form-control form-select-inline" placeholder="e.g. Corolla" />
+              </template>
             </div>
             <div class="mb-2 form-row">
               <label class="form-label">Trim</label>
-              <select v-model="trim" class="form-select form-select-inline" :disabled="!model">
-                <option value="">-- Select Trim --</option>
-                <option v-for="t in trims" :key="t" :value="t">{{ t }}</option>
-              </select>
+              <template v-if="!customVehicle">
+                <select v-model="trim" class="form-select form-select-inline" :disabled="!model">
+                  <option value="">-- Select Trim --</option>
+                  <option v-for="t in trims" :key="t" :value="t">{{ t }}</option>
+                </select>
+              </template>
+              <template v-else>
+                <input v-model="trim" type="text" class="form-control form-select-inline" placeholder="e.g. SE" />
+              </template>
+            </div>
+
+            <div style="margin-top:0.25rem; margin-left:84px;"> 
+              <a href="#" @click.prevent="toggleCustomVehicle">
+                {{ customVehicle ? 'Use dropdown selectors' : 'Enter custom vehicle' }}
+              </a>
             </div>
 
 
