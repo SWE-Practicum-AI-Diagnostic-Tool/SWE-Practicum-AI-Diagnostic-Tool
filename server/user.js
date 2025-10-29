@@ -1,4 +1,5 @@
 import { DATABASE, USER_COLLECTION } from './config.js';
+import { client } from './mongo.js';
 
 /**
  * Check if a user exists
