@@ -1,10 +1,31 @@
 <script setup>
-import { useVehicleStore } from '../stores/vehicle';
+import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
-const vehicleStore = useVehicleStore();
-const service1SubHeading = "What's going on with your";
 
+const service1SubHeading = "What's going on with your";
+const route = useRoute();
+const router = useRouter();
+const vehicle = route.query;
+
+// Reactive variables
 const problemDescription = ref("");
+const vehicleYear = ref(vehicle.year);
+const vehicleMake = ref(vehicle.make);
+
+// Form submission
+function submitProblem() {
+  router.push({
+    path: '/vehicle-help',
+    query: {
+      year: vehicle.year,
+      make: vehicle.make,
+      model: vehicle.model,
+      trim: vehicle.trim,
+      issues: problemDescription.value
+    }
+  });
+}
+
 </script>
 
 <template>
@@ -15,15 +36,15 @@ const problemDescription = ref("");
           <h3 class="heading mb-2" data-aos="fade-up" data-aos-delay="100">
             {{ service1SubHeading }}
           </h3>
-          <div v-if="vehicleStore.year && vehicleStore.make" class="vehicle-blue mb-4" data-aos="fade-up" data-aos-delay="120">
-            {{ vehicleStore.year }} {{ vehicleStore.make }}
+          <div v-if="vehicleYear && vehicleMake" class="vehicle-blue mb-4" data-aos="fade-up" data-aos-delay="120">
+            {{ vehicleYear }} {{ vehicleMake }}
           </div>
           <div class="mb-4" data-aos="fade-up" data-aos-delay="200">
             <p>
               Please describe the issue you are experiencing with your vehicle in as much detail as possible. This will help us provide the most accurate assistance. If you have any relevant symptoms, noises, warning lights, or recent repairs, please include them below.
             </p>
             <div v-if="problemDescription.trim().length > 0" class="mt-3">
-              <button class="btn btn-primary submit-btn" type="button">
+              <button class="btn btn-primary submit-btn" type="button" @click="submitProblem">
                 Submit
               </button>
             </div>

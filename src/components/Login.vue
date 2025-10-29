@@ -1,3 +1,34 @@
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { store } from '../store.js'
+
+const router = useRouter()
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const handleLogin = () => {
+  // Test login - replace with real API/auth
+  if (email.value === 'test@example.com' && password.value === 'password123') {
+    errorMessage.value = ''
+    router.push('/')
+  } else {
+    errorMessage.value = 'Invalid email or password.'
+  }
+}
+
+function handleGoogleLogin(response) {
+  console.log('Google Login Success:', response)
+  router.push('/')
+}
+
+function handleGoogleError(error) {
+  console.error('Google Login Error:', error)
+}
+
+</script>
+
 <template>
   <div class="login-container">
     <div class="login-card">
@@ -40,34 +71,6 @@
   </div>
 </template>
 
-<script setup>
-import { store } from '../store.js'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-const handleLogin = () => {
-  // Test login - replace with real API/auth
-  if (email.value === 'test@example.com' && password.value === 'password123') {
-    errorMessage.value = ''
-    router.push('/')
-  } else {
-    errorMessage.value = 'Invalid email or password.'
-  }
-}
-function handleGoogleLogin(response) {
-  console.log('Google Login Success:', response)
-  router.push('/')
-}
-function handleGoogleError(error) {
-  console.error('Google Login Error:', error)
-}
-
-</script>
 
 <style scoped>
 .login-container {
