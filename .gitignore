@@ -29,5 +29,5 @@ coverage
 
 *.tsbuildinfo
 .env
-private/certs/server.csr
-private/certs/server.key
+server.csr
+server.key

@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [vue(), mkcert()],
   server: {
     https: {
-      host:"localhost",
+      host: 'localhost',
       port: 5173,
-    }
+        },
   }
 })
