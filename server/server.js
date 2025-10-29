@@ -1,46 +1,51 @@
-// import express from 'express';
-import { MongoClient, ServerApiVersion } from 'mongodb';
-import dotenv from 'dotenv';
+import express from 'express';
+import { auth } from 'express-oauth2-jwt-bearer';
+import cors from 'cors';
+import { createUser } from './user.js';
+import { client } from './mongo.js';
 
-dotenv.config(); // loads .env file into process.env
+// Create an Express app
+const app = express();
 
-const uri = process.env.MONGODB_URI;
+// Enable CORS
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow requests from your Vue dev server
+  credentials: true // If you’re using cookies or Authorization headers
+}));
 
-// const app = express();
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+// Middleware to validate access tokens
+const validateAuth = auth({
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
 });
 
-async function run() {
-  try {
-    await client.connect();
+/**
+ * Start the server
+ */
+(function startServer() {
+  app.get('/', (req, res) => {
+    res.send('Server is running!');
+  });
 
-    const db = client.db("sample_mflix");           // <— your database
-    const collection = db.collection("movies");     // <— pick any collection
+  app.get('/api/create-user', validateAuth, async (req, res) => {
+    const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
+      headers: { authorization: req.headers.authorization },
+    });
+    
+    const user = await response.json();
+    
+    const created = await createUser(user.sub, user.name);
 
-    // Fetch first 5 movies
-    const movies = await collection.find().limit(5).toArray();
+    res.send(created ? "User created" : "User already exists");
+  });
 
-    console.log("🎬 Sample Movies:");
-    console.log(movies);
+  app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+  });
 
-    app.get('/', (req, res) => {
-      res.send('Server is running!')
-    })
-
-    // Connect to server
-    const server = app.listen(3000, () => console.log('🚀 Server on http://localhost:3000'));
-
-  } catch (error) {
-    console.error("❌ Error reading data:", error);
-  } finally {
-    await client.close();
-  }
-}
-
-run();
+  process.on('SIGINT', () => {
+    console.log('Server is shutting down...');
+    client.close();
+    process.exit(0);
+  });
+})();

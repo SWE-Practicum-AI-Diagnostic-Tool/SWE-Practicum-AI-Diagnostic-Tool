@@ -4,6 +4,7 @@ import App from './App.vue';
 import router from './router';
 import { createPinia } from 'pinia';
 import vue3GoogleLogin from 'vue3-google-login'
+import { initAuth } from './auth';
 
 const app = createApp(App);
 app.use(vue3GoogleLogin, {
@@ -11,4 +12,4 @@ app.use(vue3GoogleLogin, {
 })
 app.use(createPinia());
 app.use(router);
-app.mount('#app');
+initAuth().then(() => app.mount('#app'));
