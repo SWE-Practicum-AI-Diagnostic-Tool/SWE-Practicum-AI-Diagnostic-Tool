@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { getResponse } from "../genai.js";
 import { getVehicles } from "../vehicles.js";
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import mermaid from 'mermaid';
+import mermaid from 'mermaid/dist/mermaid.esm.min.mjs';
 
 // Initialize mermaid only when component is mounted
 const initializeMermaid = () => {
@@ -232,7 +232,7 @@ const canProceed = computed(() => {
 });
 
 // Proceed to flowchart generation
-const proceedToFlowchart = () => {
+const proceedToFlowchart = () => {  
   if (canProceed.value) {
     step.value = 'flowchart';
     getFeedback();
