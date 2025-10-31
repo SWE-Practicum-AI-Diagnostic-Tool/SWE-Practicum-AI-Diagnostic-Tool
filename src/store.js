@@ -6,14 +6,9 @@ const { cookies } = useCookies();
 // Gives reactivity to frontend when logged in or logging out
 export const store = reactive({
   loggedIn: cookies.get('loggedIn') === 'true',
-  logID: cookies.get('logID') || null,
 
   updateLoggedInStatus(status) {
     store.loggedIn = status;
     cookies.set('loggedIn', status);
-  },
-  logOut(){
-    store.loggedIn = false;
-    cookies.set('loggedIn', false);
   },
 })
