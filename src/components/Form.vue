@@ -6,10 +6,7 @@ import { reactive } from 'vue';
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
+const router = useRouter();
 
 const formData = reactive({
   make: "",
