@@ -1,8 +1,9 @@
 import express from 'express';
 import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
-import { createUser } from './user.js';
+import { createUser, getUserData } from './user.js';
 import { client } from './mongo.js';
+import { getResponse } from './genai.js';
 
 // Create an Express app
 const app = express();
@@ -28,15 +29,15 @@ const validateAuth = auth({
   });
 
   app.get('/api/create-user', validateAuth, async (req, res) => {
-    const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
-      headers: { authorization: req.headers.authorization },
-    });
-    
-    const user = await response.json();
-    
+    const user = await getUserData(req.headers.authorization);
     const created = await createUser(user.sub, user.name);
-
     res.send(created ? "User created" : "User already exists");
+  });
+
+  app.get('/api/generate', validateAuth, async (req, res) => {
+    const msg = req.query.contents;
+    const response = await getResponse(msg);
+    res.send(response);
   });
 
   app.listen(3000, () => {

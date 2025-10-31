@@ -14,6 +14,18 @@ async function userExists(userid) {
 }
 
 /**
+ * Get user data from auth0
+ * @param {string} authorization The auth0 authorization Bearer + token
+ * @returns User object
+ */
+export async function getUserData(authorization) {
+  const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
+    headers: { authorization },
+  });
+  return await response.json();
+}
+
+/**
  * Attempt to create a user
  * @param {string} userid The user identifier
  * @param {string} name The users full name
