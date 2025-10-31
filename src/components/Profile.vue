@@ -21,7 +21,9 @@ export default defineComponent({
       NewName: this.cookies.get("profileName") || '',
       crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
+      isShaking2: false,
       Email: '@example.com',
+      random: 0,
     }
   },
   methods: {
@@ -62,12 +64,22 @@ export default defineComponent({
       this.crashingOut = Number(this.crashingOut) + 1;
       this.cookies.set("crashOut", this.crashingOut, "7d");
       //console.log("Crashouts: " + this.crashingOut);
+      this.random = Math.random();
+      if (this.random < 0.5)
+        this.triggerEffect2();
+      else
       this.triggerEffect();
     },
     triggerEffect() {
       this.isShaking = true;
       setTimeout(() => {
         this.isShaking = false;
+      }, 1000); // Effect lasts for 1 second
+    },
+    triggerEffect2() {
+      this.isShaking2 = true;
+      setTimeout(() => {
+        this.isShaking2 = false;
       }, 1000); // Effect lasts for 1 second
     },
   },
@@ -97,6 +109,7 @@ export default defineComponent({
   </div> -->
   <div class="untree_co-section" id="about-section">
     <div :class="{ shake: isShaking }">
+    <div :class="{ shake2: isShaking2}">
     <div class="container">
       <div class="row mb-4">
         <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
@@ -119,6 +132,7 @@ export default defineComponent({
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
         <h1>Crashouts: {{ crashingOut }}</h1>
       </div>
+    </div>
     </div>
     </div>
   </div>
@@ -150,11 +164,20 @@ button#submit {
 .shake {
   animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
+.shake2 {
+  animation: shake2 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
 
 @keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
+  10%, 90% { transform: translate3d(-20px, 0, 0); }
+  20%, 80% { transform: translate3d(40px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-80px, 0, 0); }
+  40%, 60% { transform: translate3d(80px, 0, 0); }
+}
+@keyframes shake2 {
+  10%, 90% { transform: translate3d(0, -20px, 0); }
+  20%, 80% { transform: translate3d(0, 40px, 0); }
+  30%, 50%, 70% { transform: translate3d(0, -80px, 0); }
+  40%, 60% { transform: translate3d(0, 80px, 0); }
 }
 </style>

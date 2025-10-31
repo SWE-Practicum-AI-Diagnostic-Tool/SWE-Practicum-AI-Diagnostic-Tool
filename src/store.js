@@ -16,8 +16,4 @@ export const store = reactive({
     store.loggedIn = false;
     cookies.set('loggedIn', false);
   },
-  setLoginID(loggedID){
-    store.logID = loggedID;
-    cookies.set('logID', logID);
-  }
 })

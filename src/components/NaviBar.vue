@@ -2,6 +2,7 @@
 import { themeColor, siteName } from "../data/items";
 import { RouterLink } from 'vue-router';
 import { store } from '../store.js'
+import { logout } from '../auth.js'
 </script>
 <template>
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
@@ -32,7 +33,7 @@ import { store } from '../store.js'
             <RouterLink v-if="lI" to="/profile" class="nav-link">Profile Test</RouterLink>
           </li>
           <li class="cta-primary">
-            <RouterLink v-if="lI" @click="store.logOut()" to="/" :style="[{ backgroundColor: themeColor }]">log Out</RouterLink>
+            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">log Out</RouterLink>
           </li>
         </ul>
         <a
@@ -55,5 +56,10 @@ export default {
       return store.loggedIn
     }
   },
+  methods: {
+    loggingOut() {
+      logout();
+    }
+  }
 }
 </script>
