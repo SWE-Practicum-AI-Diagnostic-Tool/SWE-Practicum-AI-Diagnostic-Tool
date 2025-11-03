@@ -7,6 +7,8 @@ const { cookies } = useCookies();
 export const store = reactive({
   loggedIn: cookies.get('loggedIn') === 'true',
 
+  // We should not be doing this
+  // Instead use authState.isAuthenticated from auth.js
   updateLoggedInStatus(status) {
     store.loggedIn = status;
     cookies.set('loggedIn', status);
