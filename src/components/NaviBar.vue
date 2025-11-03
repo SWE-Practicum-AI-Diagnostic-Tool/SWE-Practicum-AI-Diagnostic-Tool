@@ -1,6 +1,8 @@
 <script setup>
 import { themeColor, siteName } from "../items";
 import { RouterLink } from 'vue-router';
+// import { store } from '../store.js'
+import { logout, authState } from '../auth.js'
 </script>
 <template>
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
@@ -16,15 +18,22 @@ import { RouterLink } from 'vue-router';
           <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
           <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
           <li><RouterLink to="/service1" class="nav-link">Try it Out</RouterLink></li>
-          <li><RouterLink to="/profile" class="nav-link">Profile Test</RouterLink></li>
         </ul>
         <ul
           class="js-clone-nav 
           -none mt-1 d-lg-inline-block site-menu float-right"
         >
-          <li class="cta-button-outline" style="margin-right: 5px;"><RouterLink to="/login">Login</RouterLink></li>
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="!lI" to="/login">Login</RouterLink>
+          </li>
           <li class="cta-primary">
-            <a href="#" :style="[{ backgroundColor: themeColor }]">Register</a>
+            <RouterLink v-if="!lI" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
+          </li>
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="lI" to="/profile" class="nav-link">Profile Test</RouterLink>
+          </li>
+          <li class="cta-primary">
+            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">log Out</RouterLink>
           </li>
         </ul>
         <a
@@ -39,3 +48,18 @@ import { RouterLink } from 'vue-router';
     </div>
   </nav>
 </template>
+
+<script>
+export default {
+  computed: {
+    lI() {
+      return authState.isAuthenticated
+    }
+  },
+  methods: {
+    loggingOut() {
+      logout();
+    }
+  }
+}
+</script>

@@ -1,5 +1,5 @@
 <script setup>
-import { themeColor } from "../items";
+import { themeColor } from "../data/items";
 import { useRoute, useRouter } from 'vue-router';
 import { useVehicleStore } from '../stores/vehicle';
 
@@ -22,36 +22,69 @@ const makes = ref([]);
 const models = ref([]);
 const trims = ref([]);
 
-const NHTSA_BASE = "https://vpic.nhtsa.dot.gov/api/vehicles";
+// CarQuery API endpoints
+const CARQUERY_BASE = "https://www.carqueryapi.com/api/0.3";
 
-async function fetchJson(url) {
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error("NHTSA fetch failed");
-  const data = await resp.json();
-  return data.Results || [];
+// Helper: fetch and parse JSONP from CarQuery API
+async function fetchCarQueryJsonp(url) {
+  // DEVELOPMENT: Use CORS proxy for browser fetches
+  // PRODUCTION: Use your own backend proxy for security and reliability
+  const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url + '&callback=?')}`;
+  const resp = await fetch(proxiedUrl);
+  const text = await resp.text();
+// Remove JSONP wrapper: ?({...}); or ?({...})
+const json = text.replace(/^\?\((.*)\);?$/, '$1');
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    console.error('Failed to parse CarQuery JSONP:', text);
+    return null;
+  }
 }
 
-async function fetchMakes() {
-  const data = await fetchJson(`${NHTSA_BASE}/getallmakes?format=json`);
-  makes.value = data.map(m => m.Make_Name).sort();
+// Generate years (1970 to 2022)
+function fetchYears() {
+  const endYear = 2022;
+  const startYear = 1990;
+  years.value = Array.from({ length: endYear - startYear + 1 }, (_, i) => (endYear - i).toString());
 }
 
-async function fetchModels(make) {
-  const data = await fetchJson(`${NHTSA_BASE}/getmodelsformake/${encodeURIComponent(make)}?format=json`);
-  models.value = data.map(m => m.Model_Name).sort();
+// Fetch makes for a given year
+async function fetchMakes(y) {
+  makes.value = [];
+  if (!y) return;
+  const url = `${CARQUERY_BASE}?cmd=getMakes&year=${y}`;
+  const data = await fetchCarQueryJsonp(url);
+  if (data && Array.isArray(data.Makes)) {
+    makes.value = data.Makes.map(m => m.make_display).sort();
+  } else {
+    console.error('Makes property missing or not an array:', data);
+  }
 }
 
-async function fetchTrims(year, make, model) {
-  const data = await fetchJson(`${NHTSA_BASE}/GetModelsForMakeYear/make/${encodeURIComponent(make)}/model/${encodeURIComponent(model)}/year/${year}?format=json`);
-  trims.value = data.map(t => t.Model_Name).sort(); // limited trim data, but reliable
+// Fetch models for a given year and make
+async function fetchModels(y, mk) {
+  models.value = [];
+  if (!y || !mk) return;
+  const url = `${CARQUERY_BASE}?cmd=getModels&make=${encodeURIComponent(mk)}&year=${y}`;
+  const data = await fetchCarQueryJsonp(url);
+  if (data && Array.isArray(data.Models)) {
+    models.value = data.Models.map(m => m.model_name).sort();
+  } else {
+    console.error('Models property missing or not an array:', data);
+  }
 }
 
-async function fetchYears() {
-  const currentYear = new Date().getFullYear();
-  const startYear = 1980; // NHTSA data starts from 1980
-  years.value = [];
-  for (let y = currentYear; y >= startYear; y--) {
-    years.value.push(y.toString());
+// Fetch trims for a given year, make, and model
+async function fetchTrims(y, mk, mdl) {
+  trims.value = [];
+  if (!y || !mk || !mdl) return;
+  const url = `${CARQUERY_BASE}?cmd=getTrims&make=${encodeURIComponent(mk)}&year=${y}&model=${encodeURIComponent(mdl)}`;
+  const data = await fetchCarQueryJsonp(url);
+  if (data && Array.isArray(data.Trims)) {
+    trims.value = data.Trims.map(t => t.model_trim || "Base").sort();
+  } else {
+    console.error('Trims property missing or not an array:', data);
   }
 }
 
