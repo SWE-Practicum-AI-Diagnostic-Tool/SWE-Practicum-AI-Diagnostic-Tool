@@ -9,7 +9,7 @@ const app = express();
 
 // Enable CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow requests from your Vue dev server
+  origin: 'https://localhost:5173', // Allow requests from your Vue dev server
   credentials: true // If you’re using cookies or Authorization headers
 }));
 
