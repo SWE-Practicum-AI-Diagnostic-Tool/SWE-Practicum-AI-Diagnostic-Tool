@@ -1,5 +1,5 @@
 <script setup>
-import { themeColor, siteName } from "../data/items";
+import { themeColor, siteName } from "../items";
 import { RouterLink } from 'vue-router';
 </script>
 <template>
