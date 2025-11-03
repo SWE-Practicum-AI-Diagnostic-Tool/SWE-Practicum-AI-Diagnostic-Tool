@@ -36,6 +36,7 @@ async function tryLogin() {
     authState.loginFailed = false
     console.log("Logged in as:", authState.user.name)
     store.updateLoggedInStatus(true);
+    store.updateUserID();
   } catch (err) {
     authState.isAuthenticated = false
     authState.loginFailed = true
@@ -70,4 +71,9 @@ export async function logout() {
     logoutParams: { returnTo: window.location.origin },
   })
   store.updateLoggedInStatus(false);
+}
+
+// put ID into vue3 cookies store
+export function getUserID() {
+  return authState.user.sub;
 }
