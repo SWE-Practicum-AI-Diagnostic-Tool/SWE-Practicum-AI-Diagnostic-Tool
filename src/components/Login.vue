@@ -1,32 +1,5 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { store } from '../store.js'
-
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-const handleLogin = () => {
-  // Test login - replace with real API/auth
-  if (email.value === 'test@example.com' && password.value === 'password123') {
-    errorMessage.value = ''
-    router.push('/')
-  } else {
-    errorMessage.value = 'Invalid email or password.'
-  }
-}
-
-function handleGoogleLogin(response) {
-  console.log('Google Login Success:', response)
-  router.push('/')
-}
-
-function handleGoogleError(error) {
-  console.error('Google Login Error:', error)
-}
-
+import { login, logout, authState } from '../auth.js'
 </script>
 
 
@@ -43,26 +16,8 @@ function handleGoogleError(error) {
         <button @click="logout">Logout</button>
       </div>
 
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            v-model="password"
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
-
-        <!-- Error message -->
-        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-
-        <!-- Submit -->
-        <button type="submit" v-on:click="store.updateLoggedInStatus(true)">Log In</button>
-      </form>
-      <div style="margin-top: 1rem;">
-        <!-- <GoogleLogin :callback="handleGoogleLogin" @error="handleGoogleError" /> -->
+      <div v-if="authState.loginFailed">
+        <p>Login not available.</p>
       </div>
     </div>
   </div>
