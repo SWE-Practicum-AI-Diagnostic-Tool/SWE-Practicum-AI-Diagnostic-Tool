@@ -27,6 +27,16 @@ export async function initAuth() {
   if (await authState.client.isAuthenticated()) tryLogin();
 }
 
+// Get auth0 token
+export async function getToken() {
+  if (!authState.client) return;
+
+  return await authState.client.getTokenSilently({
+    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+    scope: 'openid profile email',
+  });
+}
+
 // Attempt to login if the instance is already authenticated
 async function tryLogin() {
   try {
@@ -39,24 +49,25 @@ async function tryLogin() {
     store.updateUserID();
   } catch (err) {
     authState.isAuthenticated = false
-    authState.loginFailed = true
+    if (err == "Failed to create user") authState.loginFailed = true
     console.log("Login failed:", err);
   }
 }
 
 // Create account
 async function createUser() {
-  const token = await authState.client.getTokenSilently({
-    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-    scope: 'openid profile email',
-  });
+  const token = await getToken();
+  if (!token) return;
   
-  const res = await axios.get('http://localhost:3000/api/create-user', {
-    headers: { authorization: `Bearer ${token}` },
-    timeout: 3000,
-  });
-
-  console.log(res.data);
+  try {
+    const res = await axios.get('http://localhost:3000/api/create-user', {
+      headers: { authorization: `Bearer ${token}` },
+      timeout: 3000,
+    });
+    console.log(res.data);
+  } catch (err) {
+    throw "Failed to create user";
+  }
 }
 
 // Login

@@ -29,22 +29,19 @@ function handleGoogleError(error) {
 
 </script>
 
+
 <template>
   <div class="login-container">
     <div class="login-card">
       <h1>Login</h1>
-      <form @submit.prevent="handleLogin">
-        <!-- Email -->
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            v-model="email"
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
+      <div v-if="!authState.isAuthenticated">
+        <button @click="login" :disabled="authState.loginFailed">Login</button>
+      </div>
+    
+      <div v-if="authState.isAuthenticated">
+        <p>Logged in as <strong>{{ authState.user.name }}</strong></p>
+        <button @click="logout">Logout</button>
+      </div>
 
         <!-- Password -->
         <div class="form-group">
@@ -70,7 +67,6 @@ function handleGoogleError(error) {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .login-container {
@@ -116,6 +112,7 @@ input {
 button {
   width: 100%;
   padding: 0.8rem;
+  margin: 0.4rem;
   background: #007bff;
   color: white;
   border: none;
@@ -126,6 +123,11 @@ button {
 
 button:hover {
   background: #0056b3;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .error {
