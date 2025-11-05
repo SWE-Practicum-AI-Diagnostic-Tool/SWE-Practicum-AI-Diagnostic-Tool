@@ -1,7 +1,6 @@
 import { reactive } from 'vue';
 import { createAuth0Client } from '@auth0/auth0-spa-js'
 import axios from 'axios'
-import { store } from './store.js'
 
 export const authState = reactive({
   client: null,
@@ -70,7 +69,6 @@ export async function logout() {
   await authState.client.logout({
     logoutParams: { returnTo: window.location.origin },
   })
-  store.updateLoggedInStatus(false);
 }
 
 // put ID into vue3 cookies store

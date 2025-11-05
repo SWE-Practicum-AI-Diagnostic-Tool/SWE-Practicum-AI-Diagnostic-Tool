@@ -1,8 +1,8 @@
 <script setup>
 import { themeColor, siteName } from "../data/items";
 import { RouterLink } from 'vue-router';
-import { store } from '../store.js'
-import { logout } from '../auth.js'
+// import { store } from '../store.js'
+import { logout, authState } from '../auth.js'
 </script>
 <template>
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
@@ -53,7 +53,7 @@ import { logout } from '../auth.js'
 export default {
   computed: {
     lI() {
-      return store.loggedIn
+      return authState.isAuthenticated
     }
   },
   methods: {
