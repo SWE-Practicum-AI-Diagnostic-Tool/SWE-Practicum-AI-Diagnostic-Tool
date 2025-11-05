@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
 import { createAuth0Client } from '@auth0/auth0-spa-js'
+import { store } from './store.js';
 import axios from 'axios'
 
 export const authState = reactive({
