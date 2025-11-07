@@ -1,6 +1,6 @@
 <script setup>
 import mainPhoto from "../assets/images/car.svg";
-import { themeColor } from "../data/items";
+import { themeColor } from "../items";
 
 import { RouterLink } from 'vue-router';
 
