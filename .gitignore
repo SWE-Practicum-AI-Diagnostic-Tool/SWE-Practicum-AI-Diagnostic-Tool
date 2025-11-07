@@ -29,5 +29,6 @@ coverage
 
 *.tsbuildinfo
 .env
-server.csr
-server.key
+CARIT_CRT.crt
+CARIT_PRIVATEKEY.key
+CARIT_CSR.csr
