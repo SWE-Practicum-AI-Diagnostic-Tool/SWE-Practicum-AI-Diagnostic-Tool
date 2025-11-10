@@ -18,7 +18,7 @@ export async function initAuth() {
       audience: import.meta.env.VITE_AUTH0_AUDIENCE,
       redirect_uri: window.location.origin,
     },
-    cacheLocation: 'localstorage',
+    // cacheLocation: 'localstorage',
     useRefreshTokens: true,
   });
 
@@ -63,6 +63,7 @@ async function createUser() {
     });
     console.log(res.data);
   } catch (err) {
+    console.log(err);
     throw "Failed to create user";
   }
 }

@@ -1,9 +1,17 @@
 import express from 'express';
+// import https from 'https';
+// import fs from 'fs';
 import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
-import { createUser, getUserData } from './user.js';
+import { createUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse } from './genai.js';
+
+// const options = {
+//   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
+//   cert: fs.readFileSync('CARIT_CRT.crt'),
+//   passphrase: 'carit'
+// };
 
 // Create an Express app
 const app = express();
@@ -30,8 +38,8 @@ const validateAuth = auth({
 
   app.get('/api/create-user', validateAuth, async (req, res) => {
     const user = await getUserData(req.headers.authorization);
-    const created = await createUser(user.sub, user.name);
-    res.send(created ? "User created" : "User already exists");
+    const msg = await createUser(user.sub, user.name);
+    res.send(msg);
   });
 
   app.get('/api/generate', validateAuth, async (req, res) => {
@@ -39,10 +47,28 @@ const validateAuth = auth({
     const response = await getResponse(msg);
     res.send(response);
   });
+  
+  app.get('/api/gen-questions', validateAuth, async (req, res) => {
+    const msg = req.query.contents;
+    const response = await getResponse(msg);
+    res.send(response);
+  })
+
+  app.get('/api/gen-flowchart', validateAuth, async (req, res) => {
+    const msg = req.query.contents;
+    const response = await getResponse(msg);
+    const user = await getUserData(req.headers.authorization);
+    await saveFlowchart(user.sub, response);
+    res.send(response);
+  })
 
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
+
+  // https.createServer(options, app).listen(3000, () => {
+  //   console.log('Server is running on port 3000');
+  // });
 
   process.on('SIGINT', () => {
     console.log('Server is shutting down...');

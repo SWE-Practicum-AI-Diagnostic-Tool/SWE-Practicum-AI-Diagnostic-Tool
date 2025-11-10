@@ -116,12 +116,13 @@ onMounted(() => {
 });
 
 function submitVehicle() {
-  vehicleStore.setVehicle({
-    year: year.value,
-    make: make.value,
-    model: model.value,
-    trim: trim.value
-  });
+  // Don't need this
+  // vehicleStore.setVehicle({
+  //   year: year.value,
+  //   make: make.value,
+  //   model: model.value,
+  //   trim: trim.value
+  // });
   router.push({
     path: '/problemdescription',
     query: {

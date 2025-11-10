@@ -2,7 +2,7 @@
 import NaviBar from "./NaviBar.vue";
 import MarkdownIt from 'markdown-it';
 import { useRoute } from "vue-router";
-import { getResponse } from "../genai.js";
+import { getResponse, getFlowchart, getQuestions } from "../genai.js";
 import { getVehicles } from "../vehicles.js";
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import mermaid from 'mermaid/dist/mermaid.esm.min.mjs';
@@ -27,7 +27,7 @@ const route = useRoute();
 const details = route.query || {};
 
 // Get vehicle data
-const vehicle = details;
+const vehicle = { year: details.year, make: details.make, model: details.model, trim: details.trim };
 const issues = details.issues || "No issues provided";
 
 // Status variables
@@ -57,7 +57,8 @@ const getFeedback = async () => {
   try {
     if (step.value === 'questions') {
       // Get the multiple choice questions
-      const resp = await getResponse(generateQuestionsPrompt());
+      // const resp = await getResponse(generateQuestionsPrompt(), 'questions');
+      const resp = await getQuestions(vehicle, issues);
       try {
         // Log the response for debugging
         console.log('AI Response:', resp);
@@ -77,7 +78,20 @@ const getFeedback = async () => {
       }
     } else {
       // Get the flowchart
-      const resp = await getResponse(generateFlowchartPrompt());
+      // const resp = await getResponse(generateFlowchartPrompt(), 'flowchart');
+      
+      const responses = Object.entries(userAnswers.value)
+        .map(([questionId, answer]) => {
+          const question = questions.value.find(q => q.id === questionId);
+          const option = question?.options.find(opt => opt.id === answer);
+          return {
+            question: question?.text,
+            option: option?.text
+          };
+        })
+        .join('\n')
+      
+      const resp = await getFlowchart(vehicle, issues, responses);
       console.log('Flowchart response:', resp);
       
       // Extract the Mermaid diagram from the response
@@ -141,7 +155,7 @@ const getFeedback = async () => {
   }
 };
 
-const generateQuestionsPrompt = () => `You are a vehicle diagnostic expert. Based on the following vehicle information and issue description, generate 3-5 multiple choice questions that would help clarify the problem.
+const generateQuestionsPrompt = (vehicle, issues) => `You are a vehicle diagnostic expert. Based on the following vehicle information and issue description, generate 3-5 multiple choice questions that would help clarify the problem.
 
 IMPORTANT: Your response must be a valid JSON object with this exact structure. Do not include any other text, markdown, or explanations:
 {
@@ -167,7 +181,7 @@ Issues: ${formatField(issues)}
 
 Remember: Return ONLY the JSON object, no other text or formatting.`;
 
-const generateFlowchartPrompt = () => `You are a vehicle diagnostic expert. Create a troubleshooting flowchart using Mermaid diagram syntax based on the following information. The flowchart should guide a mechanic through the diagnostic process.
+const generateFlowchartPrompt = (vehicle, issues, responses) => `You are a vehicle diagnostic expert. Create a troubleshooting flowchart using Mermaid diagram syntax based on the following information. The flowchart should guide a mechanic through the diagnostic process.
 
 IMPORTANT: Follow these Mermaid syntax rules exactly:
 1. Start with "graph TD" (top-down graph)
@@ -193,13 +207,7 @@ Trim: ${formatField(vehicle.trim)}
 Issues: ${formatField(issues)}
 
 User Responses:
-${Object.entries(userAnswers.value)
-  .map(([questionId, answer]) => {
-    const question = questions.value.find(q => q.id === questionId);
-    const option = question?.options.find(opt => opt.id === answer);
-    return `${question?.text}: ${option?.text}`;
-  })
-  .join('\n')}
+${responses.map(r => `Question: ${r.question}\nAnswer: ${r.answer}`).join('\n\n')}
 
 Your response must be a valid Mermaid flowchart code block following this EXACT format:
 
