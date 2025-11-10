@@ -54,7 +54,6 @@ export async function getResponse(contents) {
       console.error("Failed to list or fallback to another model:", listErr);
     }
 
-    // no fallback worked — rethrow the original error so callers can handle it
     throw err;
   }
 }
