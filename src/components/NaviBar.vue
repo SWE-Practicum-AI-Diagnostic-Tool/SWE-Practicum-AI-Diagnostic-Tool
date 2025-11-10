@@ -3,6 +3,8 @@ import { themeColor, siteName } from "../data/items";
 import { RouterLink } from 'vue-router';
 // import { store } from '../store.js'
 import { logout, authState } from '../auth.js'
+import { watch } from 'vue'
+import { ref } from 'vue'
 
 </script>
 <template>
@@ -25,7 +27,7 @@ import { logout, authState } from '../auth.js'
           -none mt-1 d-lg-inline-block site-menu float-right"
         >
         <label class="switch">
-          <input type="checkbox">
+          <input type="checkbox" v-model="enabled">
           <span class="slider round"></span>
         </label>
         <li class="cta-button-outline" style="margin-right: 5px;">
@@ -67,7 +69,19 @@ export default {
     }
   }
 }
+
+const enabled = ref(false)
+
+watch(enabled, (newValue) => {
+  if (newValue) {
+    document.documentElement.classList.add('dark-mode');
+  } else {
+    document.documentElement.classList.remove('dark-mode');
+  }
+  console.log("Toggle changed:", newValue)
+})
 </script>
+
 
 <style scoped>
 /* The switch - the box around the slider */
