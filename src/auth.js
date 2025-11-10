@@ -74,6 +74,7 @@ async function createUser() {
 export async function login() {
   await authState.client.loginWithPopup();
   tryLogin();
+  store.checkUserName();
 }
 
 // Logout
@@ -86,4 +87,22 @@ export async function logout() {
 // put ID into vue3 cookies store
 export function getUserID() {
   return authState.user.sub;
+}
+
+// Pull user data from MongoDB
+export async function fetchUserData() {
+  const token = await getToken();
+  const userID = store.userID; // assuming store.js has it stored
+
+  try {
+    const res = await axios.get(`http://localhost:3000/api/get-user/${userID}`, {
+      headers: { authorization: `Bearer ${token}` },
+      timeout: 3000,
+    });
+    console.log("User data:", res.data);
+    return res.data;
+  } catch (err) {
+    console.error("Failed to fetch user data:", err);
+    return null;
+  }
 }

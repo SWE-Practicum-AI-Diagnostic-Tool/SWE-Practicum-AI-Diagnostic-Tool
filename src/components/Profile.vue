@@ -2,6 +2,7 @@
 import { getResponse } from '../genai.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
+import { fetchUserData } from '../auth.js';
 
 export default defineComponent({
   setup() {
@@ -24,6 +25,7 @@ export default defineComponent({
       isShaking2: false,
       Email: '@example.com',
       random: 0,
+      userData: null,
     }
   },
   methods: {
@@ -88,7 +90,11 @@ export default defineComponent({
     console.log(my_cookie_value);
     let crashingOut = this.cookies.get("crashOut");
     console.log("Crashout value: " + crashingOut);
-  }
+  },
+  async mounted() {
+    const userData = await fetchUserData();
+    console.log(userData);
+  },
 });
 </script>
 
@@ -117,7 +123,7 @@ export default defineComponent({
           <p>This is the profile page.</p>
         </div>
       </div>
-      <div data-aos="fade-up" data-aos-delay="0">
+      <div data-aos="fade-up" data-aos-delay="0" class="col-12 text-center">
         <img src="" alt="Profile Image" />
         <p>Pofile Name: </p>
         <div>
