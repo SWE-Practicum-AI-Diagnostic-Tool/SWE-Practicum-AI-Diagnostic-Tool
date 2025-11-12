@@ -3,6 +3,11 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ai = new GoogleGenerativeAI(process.env.GENAI_API_KEY);
 
+/**
+ * Gets a response from the AI
+ * @param {string} contents The prompt
+ * @returns The response
+ */
 export async function getResponse(contents) {
   const preferredModel = "gemini-2.5-flash";
 
@@ -59,6 +64,12 @@ export async function getResponse(contents) {
   }
 }
 
+/**
+ * Generate questions prompt
+ * @param {Object} vehicle Vehicle object
+ * @param {string} issues Vehicle issue description
+ * @returns {string} The questions prompt
+ */
 export function generateQuestionsPrompt(vehicle, issues) {
   return `You are a vehicle diagnostic expert. Based on the following vehicle information and issue description, generate 3-5 multiple choice questions that would help clarify the problem.
 
@@ -87,6 +98,13 @@ Issues: ${formatField(issues)}
 Remember: Return ONLY the JSON object, no other text or formatting.`;
 }
 
+/**
+ * Generate flowchart prompt
+ * @param {Object} vehicle Vehicle object
+ * @param {string} issues Vehicle issue description 
+ * @param {Array<Object>} responses User responses
+ * @returns {string} The flowchart prompt
+ */
 export function generateFlowchartPrompt(vehicle, issues, responses) {
   return `You are a vehicle diagnostic expert. Create a troubleshooting flowchart using Mermaid diagram syntax based on the following information. The flowchart should guide a mechanic through the diagnostic process.
 
@@ -137,7 +155,14 @@ CRITICAL FORMATTING RULES:
 Return ONLY the mermaid code block with your diagnostic flowchart, no other text or explanations.`;
 }
 
-// Helper to return a displayable value or a default placeholder
+/**
+ * Helper to return a displayable value or a default placeholder
+ * when empty. Treats undefined, null, empty string, and strings
+ * containing only whitespace as empty.
+ * @param {any} val The value
+ * @param {string} placeholder The default placeholder
+ * @returns {string} The displayable value
+*/
 function formatField(val, placeholder = "None") {
   if (val === undefined || val === null) return placeholder;
   if (typeof val === "string") {
