@@ -23,6 +23,9 @@ body {
     opacity: 1;
     visibility: visible; }
 
+.site-nav.dark body:before {
+  background: #343a40; }
+
 .text-black {
   color: #000000 !important; }
 
