@@ -66,11 +66,34 @@ export async function createUser(userid, name) {
 }
 
 /**
- * Save a flowchart for a user
+ * Save a flowchart for a user (up to 5)
  * @param {string} userid The user identifier
  * @param {string} flowchart The json string of the flowchart
+ * @param {Object} vehicle Vehicle object
+ * @param {string} issues Vehicle issue description
+ * @param {Array<Object>} responses User responses
  */
-export async function saveFlowchart(userid, flowchart) {
+export async function saveFlowchart(userid, flowchart, vehicle, issues, responses) {
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  await collection.updateOne({ _id: userid }, { $push: { flowcharts: flowchart } });
+  const MAX_FLOWCHARTS = 5;
+
+  const res = await collection.findOne({ _id: userid });
+  if (res.flowcharts.length >= MAX_FLOWCHARTS) {
+    res.flowcharts.shift();
+  }
+  res.flowcharts.push({
+    flowchart, vehicle, issues, responses
+  });
+  await collection.updateOne({ _id: userid }, { $set: res });
+}
+
+/**
+ * Get all flowcharts for a user
+ * @param {string} userid The user identifier
+ * @returns {Array<string>} The flowcharts
+ */
+export async function getFlowcharts(userid) {
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const res = await collection.findOne({ _id: userid });
+  return res.flowcharts;
 }

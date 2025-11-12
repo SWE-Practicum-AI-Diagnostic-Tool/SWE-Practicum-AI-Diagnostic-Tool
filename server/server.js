@@ -55,7 +55,7 @@ const validateAuth = auth({
     const msg = generateQuestionsPrompt(vehicle, issues);
     const response = await getResponse(msg);
     res.send(response);
-  })
+  });
 
   app.post('/api/gen-flowchart', validateAuth, async (req, res) => {
     const { vehicle, issues, responses } = req.body;
@@ -63,9 +63,15 @@ const validateAuth = auth({
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
     const user = await getUserData(req.headers.authorization);
-    await saveFlowchart(user.sub, response);
+    await saveFlowchart(user.sub, response, vehicle, issues, responses);
     res.send(response);
-  })
+  });
+
+  app.get('/api/get-flowcharts', validateAuth, async (req, res) => {
+    const user = await getUserData(req.headers.authorization);
+    const flowcharts = await getFlowcharts(user.sub);
+    res.send(flowcharts);
+  });
 
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
