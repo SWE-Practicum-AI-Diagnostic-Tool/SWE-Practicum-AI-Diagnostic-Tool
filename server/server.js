@@ -5,7 +5,7 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
 import { createUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
-import { getResponse } from './genai.js';
+import { getResponse, getQuestionsPrompt, getFlowchartPrompt, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
 
 // const options = {
 //   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
@@ -49,13 +49,15 @@ const validateAuth = auth({
   });
   
   app.get('/api/gen-questions', validateAuth, async (req, res) => {
-    const msg = req.query.contents;
+    const { vehicle, issues } = req.query;
+    const msg = generateQuestionsPrompt(vehicle, issues);
     const response = await getResponse(msg);
     res.send(response);
   })
 
   app.get('/api/gen-flowchart', validateAuth, async (req, res) => {
-    const msg = req.query.contents;
+    const { vehicle, issues, responses } = req.query;
+    const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
     const user = await getUserData(req.headers.authorization);
     await saveFlowchart(user.sub, response);
