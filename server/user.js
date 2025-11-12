@@ -2,11 +2,11 @@ import { DATABASE, USER_COLLECTION } from './config.js';
 import { client } from './mongo.js';
 
 /**
- * Check if a user exists
+ * Check if a user exists and return it
  * @param {string} userid 
- * @returns {WithId<Document> | null} If the user exists
+ * @returns {WithId<Document> | null} The user if it exists
  */
-async function userExists(userid) {
+export async function getUser(userid) {
   // Check if a user exists using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const res = await collection.findOne({ _id: userid });
@@ -32,7 +32,7 @@ export async function getUserData(authorization) {
  * @returns Whether the user account was created or not
  */
 export async function createUser(userid, name) {
-  const dbUser = await userExists(userid);
+  const dbUser = await getUser(userid);
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const user = { _id: userid, name: name, flowcharts: [] };
 
@@ -97,20 +97,3 @@ export async function getFlowcharts(userid) {
   const res = await collection.findOne({ _id: userid });
   return res.flowcharts;
 }
-
-// async function getUser(userid) {
-//   // Check if a user exists using the MongoClient
-//   // const collection = client.db(DATABASE).collection(USER_COLLECTION);
-//   // const res = await collection.findOne({ _id: userid });
-//   // return res;
-//   if(userExists(userid)){
-//     const collection = client.db(DATABASE).collection(USER_COLLECTION);
-//     const res = await collection.findOne({ _id: userid });
-//     return res;
-//   }
-//   else{
-//     console.log("User does not exist:", userid);
-//     return null;
-//   }
-
-// }
