@@ -39,16 +39,6 @@ const error = ref(null);
 const step = ref('questions'); // 'questions' or 'flowchart'
 const flowchartSvg = ref('');
 
-// Helper to return a displayable value or a default placeholder
-const formatField = (val, placeholder = "None") => {
-  if (val === undefined || val === null) return placeholder;
-  if (typeof val === "string") {
-    return val.trim() === "" ? placeholder : val;
-  }
-  if (typeof val === "number") return isNaN(val) ? placeholder : String(val);
-  return String(val);
-};
-
 // Helper to get feedback from the AI
 const getFeedback = async () => {
   loading.value = true;
@@ -89,7 +79,6 @@ const getFeedback = async () => {
             option: option?.text
           };
         })
-        .join('\n')
       
       const resp = await getFlowchart(vehicle, issues, responses);
       console.log('Flowchart response:', resp);

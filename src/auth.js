@@ -18,7 +18,7 @@ export async function initAuth() {
       audience: import.meta.env.VITE_AUTH0_AUDIENCE,
       redirect_uri: window.location.origin,
     },
-    // cacheLocation: 'localstorage',
+    cacheLocation: 'localstorage',
     useRefreshTokens: true,
   });
 

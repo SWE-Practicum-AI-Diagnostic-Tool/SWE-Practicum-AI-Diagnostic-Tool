@@ -136,3 +136,13 @@ CRITICAL FORMATTING RULES:
 
 Return ONLY the mermaid code block with your diagnostic flowchart, no other text or explanations.`;
 }
+
+// Helper to return a displayable value or a default placeholder
+function formatField(val, placeholder = "None") {
+  if (val === undefined || val === null) return placeholder;
+  if (typeof val === "string") {
+    return val.trim() === "" ? placeholder : val;
+  }
+  if (typeof val === "number") return isNaN(val) ? placeholder : String(val);
+  return String(val);
+}

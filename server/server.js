@@ -5,7 +5,7 @@ import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
 import { createUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
-import { getResponse, getQuestionsPrompt, getFlowchartPrompt, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
+import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
 
 // const options = {
 //   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
@@ -15,6 +15,8 @@ import { getResponse, getQuestionsPrompt, getFlowchartPrompt, generateQuestionsP
 
 // Create an Express app
 const app = express();
+
+app.use(express.json());
 
 // Enable CORS
 app.use(cors({
@@ -42,21 +44,22 @@ const validateAuth = auth({
     res.send(msg);
   });
 
-  app.get('/api/generate', validateAuth, async (req, res) => {
-    const msg = req.query.contents;
+  app.post('/api/generate', validateAuth, async (req, res) => {
+    const msg = req.body.contents;
     const response = await getResponse(msg);
     res.send(response);
   });
   
-  app.get('/api/gen-questions', validateAuth, async (req, res) => {
-    const { vehicle, issues } = req.query;
+  app.post('/api/gen-questions', validateAuth, async (req, res) => {
+    const { vehicle, issues } = req.body;
     const msg = generateQuestionsPrompt(vehicle, issues);
     const response = await getResponse(msg);
     res.send(response);
   })
 
-  app.get('/api/gen-flowchart', validateAuth, async (req, res) => {
-    const { vehicle, issues, responses } = req.query;
+  app.post('/api/gen-flowchart', validateAuth, async (req, res) => {
+    const { vehicle, issues, responses } = req.body;
+    console.log(responses);
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
     const user = await getUserData(req.headers.authorization);
