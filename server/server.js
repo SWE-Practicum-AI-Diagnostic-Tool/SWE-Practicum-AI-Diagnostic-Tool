@@ -59,7 +59,6 @@ const validateAuth = auth({
 
   app.post('/api/gen-flowchart', validateAuth, async (req, res) => {
     const { vehicle, issues, responses } = req.body;
-    console.log(responses);
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
     const user = await getUserData(req.headers.authorization);

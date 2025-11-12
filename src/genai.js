@@ -1,11 +1,12 @@
-import { J } from 'mermaid/dist/chunks/mermaid.esm.min/chunk-KXVH62NG.mjs';
-import { authState, getToken } from './auth.js';
+import { getToken } from './auth.js';
 import axios from 'axios'
 
 async function serverGet(endpoint, params) {
   const url = `http://localhost:3000/api/${endpoint}`;
   const token = await getToken();
-  const response = await axios.get(url, { params, headers: { Authorization: `Bearer ${token}` } });
+  const config = { headers: { Authorization: `bearer ${token}` } };
+  if (params) config.params = params;
+  const response = await axios.get(url, config);
   return response.data;
 }
 
