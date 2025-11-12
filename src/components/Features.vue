@@ -1,24 +1,24 @@
 <script setup>
-import { themeColor } from "../data/items";
+import { themeColor } from "../items";
 const heading = "Features";
 const subHeading = "it fixes your car what else do you need to know";
 
 const advantages = [
   {
-    name: "Header",
-    des: "Filler Text",
+    name: "Vehicle Selecter",
+    des: "Select your vehicle from a wide range of makes and models to get accurate diagnostics and solutions tailored specifically for your car.",
   },
   {
-    name: "Header",
-    des: "Filler Text",
+    name: "Service Responce",
+    des: "Our AI will ask questions to better understand the issue as well as create a tree report for you to follow!",
   },
   {
-    name: "Header",
-    des: "Filler Text",
+    name: "Easy Login",
+    des: "Easy login with multiple options including Google and Facebook! No more remembering passwords!",
   },
   {
-    name: "Header",
-    des: "Filler Text",
+    name: "Interesting Profile",
+    des: "Crashout button goes hard!",
   },
 ];
 </script>

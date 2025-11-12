@@ -1,5 +1,5 @@
 <script setup>
-import { themeColor } from "../data/items";
+import { themeColor } from "../items";
 import { useRoute, useRouter } from 'vue-router';
 import { useVehicleStore } from '../stores/vehicle';
 

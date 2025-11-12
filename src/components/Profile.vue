@@ -2,6 +2,8 @@
 import { getResponse } from '../genai.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
+//import { fetchUserData } from '../auth.js';
+import personPicture from "../assets/images/UntitledPerson.png";
 
 export default defineComponent({
   setup() {
@@ -24,6 +26,9 @@ export default defineComponent({
       isShaking2: false,
       Email: '@example.com',
       random: 0,
+      userData: null,
+      isRolling: false,
+      personPhoto: personPicture,
     }
   },
   methods: {
@@ -62,7 +67,7 @@ export default defineComponent({
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
-      this.cookies.set("crashOut", this.crashingOut, "7d");
+      this.cookies.set("crashOut", this.crashingOut);
       //console.log("Crashouts: " + this.crashingOut);
       this.random = Math.random();
       if (this.random < 0.5)
@@ -82,34 +87,34 @@ export default defineComponent({
         this.isShaking2 = false;
       }, 1000); // Effect lasts for 1 second
     },
+    doBarrelRoll() {
+      this.crashingOut = Number(this.crashingOut) + 1;
+      this.cookies.set("crashOut", this.crashingOut);
+      this.triggerEffect();
+      this.triggerEffect2();
+      this.isRolling = true;
+      setTimeout(() => {
+        this.isRolling = false;
+      }, 1000); // matches the 1s animation duration
+    },
   },
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
     let crashingOut = this.cookies.get("crashOut");
     console.log("Crashout value: " + crashingOut);
-  }
+  },
+  async mounted() {
+    const userData = await fetchUserData();
+    console.log(userData);
+  },
 });
 </script>
 
 <template>
-    <!-- <div class="untree_co-section" data-aos="fade-up" data-aos-delay="0">
-        <div class="home-body" >
-          <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
-          <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
-      <div id="response">{{ response }}</div>
-    </div>
-    </div>
-    <div data-aos="fade-up" data-aos-delay="0">
-    <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
-  <button id="submit" @click="cookies.set('myCoookie', inputCookie)">Set Cookie</button>
-  </div>
-  <div data-aos="fade-up" data-aos-delay="0">
-  Current Cookie Value: {{ cookies.get("myCoookie") }}
-  </div> -->
   <div class="untree_co-section" id="about-section">
-    <div :class="{ shake: isShaking }">
-    <div :class="{ shake2: isShaking2}">
+    <div class="untree_co-section" id="about-section" :class="{ 'barrel-roll': isRolling }">
+    <div :class="{ shake: isShaking, shake2: isShaking2 }">
     <div class="container">
       <div class="row mb-4">
         <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
@@ -117,8 +122,8 @@ export default defineComponent({
           <p>This is the profile page.</p>
         </div>
       </div>
-      <div data-aos="fade-up" data-aos-delay="0">
-        <img src="" alt="Profile Image" />
+      <div data-aos="fade-up" data-aos-delay="0" class="col-12 text-center">
+        <img :src="personPhoto" alt="Profile Image" />
         <p>Pofile Name: </p>
         <div>
           <p v-if="!editMode">{{ NewName }}</p>
@@ -131,6 +136,7 @@ export default defineComponent({
         <button v-on:click="editPage()">Edit Profile</button>
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
         <h1>Crashouts: {{ crashingOut }}</h1>
+        <button @click="doBarrelRoll" class="btn btn-secondary">Do a Barrel Roll!</button>
       </div>
     </div>
     </div>
@@ -179,5 +185,14 @@ button#submit {
   20%, 80% { transform: translate3d(0, 40px, 0); }
   30%, 50%, 70% { transform: translate3d(0, -80px, 0); }
   40%, 60% { transform: translate3d(0, 80px, 0); }
+}
+
+@keyframes barrelRoll {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.barrel-roll {
+  animation: barrelRoll 1s linear;
 }
 </style>

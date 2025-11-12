@@ -1,5 +1,5 @@
 <script setup>
-import { themeColor, siteName } from "../data/items";
+import { themeColor, siteName } from "../items";
 import { RouterLink } from 'vue-router';
 // import { store } from '../store.js'
 import { logout, authState } from '../auth.js'
@@ -37,10 +37,10 @@ import { ref } from 'vue'
             <RouterLink v-if="!lI" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
           </li>
           <li class="cta-button-outline" style="margin-right: 5px;">
-            <RouterLink v-if="lI" to="/profile" class="nav-link">Profile Test</RouterLink>
+            <RouterLink v-if="lI" to="/profile" class="nav-link">Profile</RouterLink>
           </li>
           <li class="cta-primary">
-            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">log Out</RouterLink>
+            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">Log Out</RouterLink>
           </li>
         </ul>
         <a
