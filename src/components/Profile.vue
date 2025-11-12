@@ -3,6 +3,7 @@ import { getResponse } from '../genai.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
+import personPicture from "../assets/images/UntitledPerson.png";
 
 export default defineComponent({
   setup() {
@@ -27,6 +28,7 @@ export default defineComponent({
       random: 0,
       userData: null,
       isRolling: false,
+      personPhoto: personPicture,
     }
   },
   methods: {
@@ -135,7 +137,7 @@ export default defineComponent({
         </div>
       </div>
       <div data-aos="fade-up" data-aos-delay="0" class="col-12 text-center">
-        <img src="" alt="Profile Image" />
+        <img :src="personPhoto" alt="Profile Image" />
         <p>Pofile Name: </p>
         <div>
           <p v-if="!editMode">{{ NewName }}</p>
