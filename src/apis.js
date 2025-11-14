@@ -32,3 +32,11 @@ export async function getFlowchart(vehicle, issues, responses) {
 export async function getSavedFlowcharts() {
   return serverGet('get-flowcharts');
 }
+
+export async function getUserData() {
+  return serverGet('get-user-data');
+}
+
+export async function setUserData(name) {
+  return serverPost('set-user-data', { name });
+}

@@ -3,7 +3,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import mermaid from 'mermaid/dist/mermaid.esm.min.mjs'
-import { getFlowchart } from '../genai.js'
+import { getFlowchart } from '../apis.js'
 
 const route = useRoute()
 const router = useRouter()

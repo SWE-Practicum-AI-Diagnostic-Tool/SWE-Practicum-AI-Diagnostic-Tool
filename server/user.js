@@ -14,6 +14,16 @@ export async function getUser(userid) {
 }
 
 /**
+ * Update user information
+ * @param {string} userid The user identifier
+ * @param {Object} updates The updates
+ */
+export async function updateUser(userid, updates) {
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  await collection.updateOne({ _id: userid }, { $set: updates });
+}
+
+/**
  * Get user data from auth0
  * @param {string} authorization The auth0 authorization Bearer + token
  * @returns User object

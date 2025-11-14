@@ -3,7 +3,7 @@ import express from 'express';
 // import fs from 'fs';
 import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
-import { createUser, getUserData, saveFlowchart } from './user.js';
+import { createUser, getUser, updateUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
 
@@ -71,6 +71,19 @@ const validateAuth = auth({
     const flowcharts = await getFlowcharts(user.sub);
     res.send(flowcharts);
   });
+
+  app.get('/api/get-user-data', validateAuth, async (req, res) => {
+    const user = await getUserData(req.headers.authorization);
+    const dbUser = await getUser(user.sub);
+    res.send({ name: dbUser.name });
+  });
+
+  app.post('/api/set-user-data', validateAuth, async (req, res) => {
+    const { name } = req.body;
+    const user = await getUserData(req.headers.authorization);
+    await updateUser(user.sub, { name });
+    res.send({ success: true });
+  })
 
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
