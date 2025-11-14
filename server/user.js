@@ -2,11 +2,11 @@ import { DATABASE, USER_COLLECTION } from './config.js';
 import { client } from './mongo.js';
 
 /**
- * Check if a user exists and return it
+ * Get user data from the database
  * @param {string} userid 
  * @returns {WithId<Document> | null} The user if it exists
  */
-export async function getUser(userid) {
+export async function getUserDB(userid) {
   // Check if a user exists using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const res = await collection.findOne({ _id: userid });
@@ -14,21 +14,11 @@ export async function getUser(userid) {
 }
 
 /**
- * Update user information
- * @param {string} userid The user identifier
- * @param {Object} updates The updates
- */
-export async function updateUser(userid, updates) {
-  const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  await collection.updateOne({ _id: userid }, { $set: updates });
-}
-
-/**
  * Get user data from auth0
  * @param {string} authorization The auth0 authorization Bearer + token
  * @returns User object
  */
-export async function getUserData(authorization) {
+export async function getUserAuth0(authorization) {
   const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/userinfo`, {
     headers: { authorization },
   });
@@ -36,15 +26,26 @@ export async function getUserData(authorization) {
 }
 
 /**
+ * Update user information in the database
+ * @param {string} userid The user identifier
+ * @param {Object} updates The updates
+ */
+export async function updateUserDB(userid, updates) {
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  await collection.updateOne({ _id: userid }, { $set: updates });
+}
+
+/**
  * Attempt to create a user
  * @param {string} userid The user identifier
  * @param {string} name The users full name
+ * @param {string} email The users email
  * @returns Whether the user account was created or not
  */
-export async function createUser(userid, name) {
-  const dbUser = await getUser(userid);
+export async function createUser(userid, name, email) {
+  const dbUser = await getUserDB(userid);
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const user = { _id: userid, name: name, flowcharts: [] };
+  const user = { _id: userid, name, email, flowcharts: [] };
 
   if (!dbUser) {
     // Create a user using the MongoClient
