@@ -15,11 +15,10 @@ const vehicleMake = ref(vehicle.make);
 // Form submission
 function submitProblem() {
   router.push({
-    path: '/vehicle-flowchart',
+    path: '/vehicle-questions',
     query: {
       ...vehicle,
-      issues,
-      answers: JSON.stringify(userAnswers.value),
+      issues: problemDescription.value
     },
   })
 }
