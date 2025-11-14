@@ -15,15 +15,12 @@ const vehicleMake = ref(vehicle.make);
 // Form submission
 function submitProblem() {
   router.push({
-    path: '/vehicle-help',
+    path: '/vehicle-questions',
     query: {
-      year: vehicle.year,
-      make: vehicle.make,
-      model: vehicle.model,
-      trim: vehicle.trim,
+      ...vehicle,
       issues: problemDescription.value
-    }
-  });
+    },
+  })
 }
 
 </script>
