@@ -72,6 +72,19 @@ const validateAuth = auth({
     res.send(flowcharts);
   });
 
+  app.get('/api/get-user-data', validateAuth, async (req, res) => {
+    const user = await getUserData(req.headers.authorization);
+    const dbUser = await getUser(user.sub);
+    res.send({ name: dbUser.name });
+  });
+
+  app.post('/api/set-user-data', validateAuth, async (req, res) => {
+    const { name } = req.body;
+    const user = await getUserData(req.headers.authorization);
+    await updateUser(user.sub, { name });
+    res.send({ success: true });
+  })
+
   app.listen(3000, () => {
     console.log('Server is running on port 3000');
   });

@@ -103,7 +103,7 @@ export default defineComponent({
     console.log("Crashout value: " + crashingOut);
   },
   async mounted() {
-    const userData = getUserData();
+    const userData = await getUserData();
     this.Name = userData.name;
   },
 });
