@@ -1,142 +1,96 @@
 <script>
-import { getResponse } from '../genai.js'
-import { useCookies } from "vue3-cookies";
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
+import { store } from "../store.js";  // ✅ import store
 
 export default defineComponent({
-  setup() {
-    const { cookies } = useCookies();
-    return { cookies };
-  },
-  name: 'Profile',
-  components: {},
+  name: "Profile",
+
   data() {
     return {
-      inputValue: '',
-      response: '',
-      inputCookie: '',
-      loading: false,
-      my_cookie_value: '',
       editMode: false,
-      NewName: this.cookies.get("profileName") || '',
-      crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
       isShaking2: false,
-      Email: '@example.com',
-      random: 0,
-    }
+     store,        // ✅ expose store to template
+    };
   },
+
+  computed: {
+    user() {
+      return store.user; // ✅ still reactive and available
+    },
+  },
+
   methods: {
-    async ask() {
-      this.response = '';
-      this.loading = true;
-      try {
-        const res = await getResponse(this.inputValue);
-        // strip legacy mocked prefix if present so we don't echo the prompt
-        let out = res;
-        const prefix = 'Mocked response (client):';
-        if (typeof out === 'string' && out.startsWith(prefix)) {
-          out = out.slice(prefix.length).trim();
-        }
-        // Remove legacy 'OK — received your request.' wrapper if present
-        const legacyOk = 'OK — received your request.';
-        if (typeof out === 'string' && out.startsWith(legacyOk)) {
-          out = out.slice(legacyOk.length).trim();
-        }
-        this.response = out;
-      } catch (err) {
-        this.response = 'Error: ' + (err?.message || String(err));
-      } finally {
-        this.loading = false;
-      }
-    },
-    saveProfile(string) {
-      // Placeholder function to save profile changes
-      console.log('Profile saved as: ' + string);
-      this.cookies.set("profileName", string, "7d");
-    },
     editPage() {
       this.editMode = !this.editMode;
-      if(!this.editMode)
-        this.saveProfile(this.NewName);
     },
+
     crashOut() {
-      this.crashingOut = Number(this.crashingOut) + 1;
-      this.cookies.set("crashOut", this.crashingOut, "7d");
-      //console.log("Crashouts: " + this.crashingOut);
-      this.random = Math.random();
-      if (this.random < 0.5)
-        this.triggerEffect2();
-      else
-      this.triggerEffect();
+      store.user.crashingOut = Number(store.user.crashingOut || 0) + 1;
     },
+
     triggerEffect() {
       this.isShaking = true;
-      setTimeout(() => {
-        this.isShaking = false;
-      }, 1000); // Effect lasts for 1 second
+      setTimeout(() => (this.isShaking = false), 1000);
     },
+
     triggerEffect2() {
       this.isShaking2 = true;
-      setTimeout(() => {
-        this.isShaking2 = false;
-      }, 1000); // Effect lasts for 1 second
+      setTimeout(() => (this.isShaking2 = false), 1000);
     },
   },
-  mounted() {
-    let my_cookie_value = this.cookies.get("myCoookie");
-    console.log(my_cookie_value);
-    let crashingOut = this.cookies.get("crashOut");
-    console.log("Crashout value: " + crashingOut);
-  }
+
+  async mounted() {
+    await store.loadUserFromDatabase(); // ✅ loads from DB once component mounts
+  },
 });
 </script>
 
+
+
+
 <template>
-    <!-- <div class="untree_co-section" data-aos="fade-up" data-aos-delay="0">
-        <div class="home-body" >
-          <input v-model="inputValue" id="input" type="text" placeholder="Ask the AI..." />
-          <button id="submit" @click="ask" :disabled="loading">{{ loading ? 'Loading...' : 'Ask AI' }}</button>
-      <div id="response">{{ response }}</div>
-    </div>
-    </div>
-    <div data-aos="fade-up" data-aos-delay="0">
-    <input v-model="inputCookie" id="input" type="text" placeholder="change Cookie" />
-  <button id="submit" @click="cookies.set('myCoookie', inputCookie)">Set Cookie</button>
-  </div>
-  <div data-aos="fade-up" data-aos-delay="0">
-  Current Cookie Value: {{ cookies.get("myCoookie") }}
-  </div> -->
   <div class="untree_co-section" id="about-section">
     <div :class="{ shake: isShaking }">
-    <div :class="{ shake2: isShaking2}">
-    <div class="container">
-      <div class="row mb-4">
-        <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
-          <h2 class="heading">Profile Page</h2>
-          <p>This is the profile page.</p>
+      <div :class="{ shake2: isShaking2 }">
+        <div class="container">
+          <div class="row mb-4">
+            <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
+              <h2 class="heading">Profile Page</h2>
+              <p>This is the profile page.</p>
+            </div>
+          </div>
+
+          <!-- ✅ safer rendering -->
+<div v-if="user && user.name">
+  <img src="" alt="Profile Image" />
+  <p>Profile Name:</p>
+
+  <div>
+    <p v-if="!editMode">{{ user.name }}</p>
+    <input v-if="editMode" v-model="user.name" />
+  </div>
+
+  <p>Email:</p>
+  <p>{{ user.Email }}</p>
+
+  <button @click="editPage">Edit Profile</button>
+  <button @click="crashOut" class="btn btn-success">Crash Out!</button>
+
+  <h1>Crashouts: {{ user.crashingOut }}</h1>
+</div>
+
+<!-- ✅ while loading -->
+<div v-else>
+  <p>Loading profile...</p>
+</div>
+
         </div>
       </div>
-      <div data-aos="fade-up" data-aos-delay="0">
-        <img src="" alt="Profile Image" />
-        <p>Pofile Name: </p>
-        <div>
-          <p v-if="!editMode">{{ NewName }}</p>
-          <input v-if="editMode" v-model="NewName" type="text" placeholder="Enter your name" />
-        </div>
-        <p>Email: </p>
-        <div>
-          <p> {{ Email }}</p>
-        </div>
-        <button v-on:click="editPage()">Edit Profile</button>
-        <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
-        <h1>Crashouts: {{ crashingOut }}</h1>
-      </div>
-    </div>
-    </div>
     </div>
   </div>
 </template>
+
 
 <style>
 .home-body {

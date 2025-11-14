@@ -7,14 +7,13 @@ import { client } from './mongo.js';
  * @returns {boolean} If the user exists
  */
 async function userExists(userid) {
-  // Check if a user exists using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const res = await collection.findOne({ _id: userid });
+  const res = await collection.findOne({ _id: userid }); // Auth0 ID is used as _id
   return res;
 }
 
 /**
- * Get user data from auth0
+ * Get user data from Auth0
  * @param {string} authorization The auth0 authorization Bearer + token
  * @returns User object
  */
@@ -27,22 +26,21 @@ export async function getUserData(authorization) {
 
 /**
  * Attempt to create a user
- * @param {string} userid The user identifier
+ * @param {string} userid The Auth0 user identifier
  * @param {string} name The users full name
+ * @param {string} email The users email
  * @returns Whether the user account was created or not
  */
-export async function createUser(userid, name) {
+export async function createUser(userid, name ) {
   if (await userExists(userid)) {
     console.log("User already exists:", userid);
     return false;
   }
 
-  // Create a user using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const user = { _id: userid, name: name };
+  const user = { _id: userid, name};
   await collection.insertOne(user);
-  
+
   console.log("User created:", user);
-  
-  return true
+  return true;
 }

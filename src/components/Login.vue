@@ -12,9 +12,15 @@ import { login, logout, authState } from '../auth.js'
       </div>
     
       <div v-if="authState.isAuthenticated">
-        <p>Logged in as <strong>{{ authState.user.name }}</strong></p>
-        <button @click="logout">Logout</button>
-      </div>
+  <template v-if="authState.user">
+    <p>Logged in as <strong>{{ authState.user.name }}</strong></p>
+  </template>
+  <template v-else>
+    <p>Loading user info...</p>
+  </template>
+  <button @click="logout">Logout</button>
+</div>
+
 
       <div v-if="authState.loginFailed">
         <p>Login not available.</p>

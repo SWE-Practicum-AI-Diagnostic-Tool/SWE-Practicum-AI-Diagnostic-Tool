@@ -1,6 +1,11 @@
 import { reactive } from 'vue';
 import { createAuth0Client } from '@auth0/auth0-spa-js'
 import axios from 'axios'
+import { useCookies } from "vue3-cookies";
+import { store } from './store.js';
+
+
+const { cookies } = useCookies();
 
 export const authState = reactive({
   client: null,
@@ -37,19 +42,32 @@ export async function getToken() {
 }
 
 // Attempt to login if the instance is already authenticated
-async function tryLogin() {
+export async function tryLogin() {
   try {
+    authState.isAuthenticated = await authState.client.isAuthenticated();
+
+    if (!authState.isAuthenticated) return;
+
     authState.user = await authState.client.getUser();
-    await createUser();
-    authState.isAuthenticated = true
-    authState.loginFailed = false
-    console.log("Logged in as:", authState.user.name)
-  } catch (err) {
-    authState.isAuthenticated = false
-    if (err == "Failed to create user") authState.loginFailed = true
-    console.log("Login failed:", err);
+
+    console.log("Logged in as:", authState.user);
+
+    const userId = authState.user.sub;
+
+    // ✅ Save into cookie store
+    store.user.id = userId;
+    store.updateLoggedInStatus(true);
+
+    // ✅ Load DB data
+    await store.loadUserFromDatabase();
+
+  } catch (error) {
+    console.error("Login error:", error);
   }
 }
+
+
+
 
 // Create account
 async function createUser() {
