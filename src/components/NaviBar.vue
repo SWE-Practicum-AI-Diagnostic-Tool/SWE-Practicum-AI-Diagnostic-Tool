@@ -1,7 +1,6 @@
 <script setup>
 import { themeColor, siteName } from "../items";
 import { RouterLink } from 'vue-router';
-// import { store } from '../store.js'
 import { logout, authState } from '../auth.js'
 </script>
 <template>

@@ -2,11 +2,11 @@ import { DATABASE, USER_COLLECTION } from './config.js';
 import { client } from './mongo.js';
 
 /**
- * Check if a user exists
+ * Check if a user exists and return it
  * @param {string} userid 
- * @returns {boolean} If the user exists
+ * @returns {WithId<Document> | null} The user if it exists
  */
-async function userExists(userid) {
+export async function getUser(userid) {
   // Check if a user exists using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const res = await collection.findOne({ _id: userid });
@@ -32,19 +32,70 @@ export async function getUserData(authorization) {
  * @returns Whether the user account was created or not
  */
 export async function createUser(userid, name) {
-  if (await userExists(userid)) {
-    console.log("User already exists:", userid);
-    return false;
+  const dbUser = await getUser(userid);
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const user = { _id: userid, name: name, flowcharts: [] };
+
+  if (!dbUser) {
+    // Create a user using the MongoClient
+    await collection.insertOne(user);
+    console.log("User created:", user);
+    return "User created";
   }
 
-  // Create a user using the MongoClient
+  // Check for missing fields
+  let updated = false;
+  for (const field in user) {
+    if (!dbUser.hasOwnProperty(field)) {
+      dbUser[field] = user[field];
+      updated = true;
+    }
+  }
+
+  if (updated) {
+    // Update the user using the MongoClient
+    const collection = client.db(DATABASE).collection(USER_COLLECTION);
+    await collection.updateOne({ _id: userid }, { $set: dbUser });
+    console.log("User updated:", dbUser);
+    return "User updated";
+  } else {
+    // User already exists
+    console.log("User already exists:", userid);
+    return "User already exists";
+  }
+}
+
+/**
+ * Save a flowchart for a user (up to 5)
+ * @param {string} userid The user identifier
+ * @param {string} flowchart The json string of the flowchart
+ * @param {Object} vehicle Vehicle object
+ * @param {string} issues Vehicle issue description
+ * @param {Array<Object>} responses User responses
+ */
+export async function saveFlowchart(userid, flowchart, vehicle, issues, responses) {
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const user = { _id: userid, name: name };
-  await collection.insertOne(user);
-  
-  console.log("User created:", user);
-  
-  return true
+  const MAX_FLOWCHARTS = 5;
+
+  const res = await collection.findOne({ _id: userid });
+  if (res.flowcharts.length >= MAX_FLOWCHARTS) {
+    res.flowcharts.shift();
+  }
+  res.flowcharts.push({
+    flowchart, vehicle, issues, responses
+  });
+  await collection.updateOne({ _id: userid }, { $set: res });
+}
+
+/**
+ * Get all flowcharts for a user
+ * @param {string} userid The user identifier
+ * @returns {Array<string>} The flowcharts
+ */
+export async function getFlowcharts(userid) {
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const res = await collection.findOne({ _id: userid });
+  return res.flowcharts;
 }
 
 async function getUser(userid) {

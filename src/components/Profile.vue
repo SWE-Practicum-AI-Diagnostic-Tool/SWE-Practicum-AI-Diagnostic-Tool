@@ -24,6 +24,7 @@ export default defineComponent({
       isShaking2: false,
       Email: '@example.com',
       random: 0,
+      userData: null,
       isRolling: false,
       personPhoto: personPicture,
     }

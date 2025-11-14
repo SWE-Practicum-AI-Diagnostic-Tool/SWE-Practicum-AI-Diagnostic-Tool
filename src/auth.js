@@ -66,6 +66,7 @@ async function createUser() {
     });
     console.log(res.data);
   } catch (err) {
+    console.log(err);
     throw "Failed to create user";
   }
 }
