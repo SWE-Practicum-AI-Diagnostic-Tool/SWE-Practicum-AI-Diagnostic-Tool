@@ -1,6 +1,5 @@
 import { reactive } from 'vue';
 import { createAuth0Client } from '@auth0/auth0-spa-js'
-import { store } from './store.js';
 import axios from 'axios'
 
 export const authState = reactive({
@@ -45,8 +44,6 @@ async function tryLogin() {
     authState.isAuthenticated = true
     authState.loginFailed = false
     console.log("Logged in as:", authState.user.name)
-    store.updateLoggedInStatus(true);
-    store.updateUserID();
   } catch (err) {
     authState.isAuthenticated = false
     if (err == "Failed to create user") authState.loginFailed = true

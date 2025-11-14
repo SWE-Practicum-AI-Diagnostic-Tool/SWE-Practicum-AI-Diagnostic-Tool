@@ -97,21 +97,3 @@ export async function getFlowcharts(userid) {
   const res = await collection.findOne({ _id: userid });
   return res.flowcharts;
 }
-
-async function getUser(userid) {
-  // Check if a user exists using the MongoClient
-  // const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  // const res = await collection.findOne({ _id: userid });
-  // return res;
-  if(userExists(userid)){
-    const collection = client.db(DATABASE).collection(USER_COLLECTION);
-    //const res = await collection.findOne({ name: userName });
-    const res = await collection.find({ name: userName });
-    return res;
-  }
-  else{
-    console.log("User does not exist:", userid);
-    return null;
-  }
-
-}
