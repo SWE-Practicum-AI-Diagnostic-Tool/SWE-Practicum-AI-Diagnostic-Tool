@@ -3,7 +3,7 @@ import express from 'express';
 // import fs from 'fs';
 import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
-import { createUser, getUserData, saveFlowchart } from './user.js';
+import { createUser, getUser, updateUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
 

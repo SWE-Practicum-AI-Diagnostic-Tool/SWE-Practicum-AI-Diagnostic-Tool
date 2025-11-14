@@ -4,7 +4,7 @@ import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
-import { getUser } from '../../server/user.js';
+import { setUserData } from '../apis.js';
 
 export default defineComponent({
   setup() {
@@ -58,6 +58,7 @@ export default defineComponent({
     },
     saveProfile() {
       // TODO: Save profile changes to database
+      setUserData(this.Name);
     },
     editPage() {
       this.editMode = !this.editMode;
