@@ -16,9 +16,7 @@ export default defineComponent({
     return {
       inputValue: '',
       response: '',
-      inputCookie: '',
       loading: false,
-      my_cookie_value: '',
       editMode: false,
       NewName: this.cookies.get("profileName") || '',
       crashingOut: this.cookies.get("crashOut") || 0,
@@ -26,7 +24,6 @@ export default defineComponent({
       isShaking2: false,
       Email: '@example.com',
       random: 0,
-      userData: null,
       isRolling: false,
       personPhoto: personPicture,
     }

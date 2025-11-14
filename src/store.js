@@ -20,6 +20,4 @@ export const store = reactive({
     store.ID = getUserID();
     cookies.set('userID', store.ID);
   },
-  
-
 });
