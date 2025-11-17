@@ -76,11 +76,11 @@ const validateAuth = auth({
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
     const user = await getUserData(req.headers.authorization);
     const dbUser = await getUser(user.sub);
-    res.send({ name: dbUser.name, email: dbUser.email });
+    res.send({ name: dbUser.name, email: dbUser.email, crashOut: dbUser.crashOut, attitude: dbUser.attitude });
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
-    const fields = ["name", "email"];
+    const fields = ["name", "email", "attitude", "crashOut"];
     for(const field in fields){
       if(req.body.hasOwnProperty(field)){
         updateFields[field] = req.body[field];

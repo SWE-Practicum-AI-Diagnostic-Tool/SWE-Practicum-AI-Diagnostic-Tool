@@ -15,12 +15,10 @@ export default defineComponent({
   components: {},
   data() {
     return {
-      inputValue: '',
-      response: '',
-      loading: false,
+      attitude: '',
       editMode: false,
       Name: '',
-      crashingOut: this.cookies.get("crashOut") || 0,
+      crashingOut: 0,
       isShaking: false,
       isShaking2: false,
       Email: '',
@@ -33,11 +31,11 @@ export default defineComponent({
   methods: {
     saveProfile() {
       // TODO: Save profile changes to database
-      setUserData(this.Name);
+      setUserData(this.Name, this.Email, this.attitude, this.crashingOut);
     },
     editPage() {
       this.editMode = !this.editMode;
-      if (!this.editMode) this.saveProfile(this.Name);
+      if (!this.editMode) this.saveProfile();
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -48,6 +46,7 @@ export default defineComponent({
         this.triggerEffect2();
       else
       this.triggerEffect();
+      setUserData(this.crashingOut);
     },
     triggerEffect() {
       this.isShaking = true;
@@ -75,13 +74,13 @@ export default defineComponent({
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
-    let crashingOut = this.cookies.get("crashOut");
-    console.log("Crashout value: " + crashingOut);
   },
   async mounted() {
     const userData = await getUserData();
     this.Name = userData.name;
     this.Email = userData.email;
+    this.attitude = userData.attitude;
+    this.crashingOut = userData.crashOut || 0;
   },
 });
 </script>
@@ -107,6 +106,18 @@ export default defineComponent({
         <p>Email: </p>
         <div>
           <p> {{ Email }}</p>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown button
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" v-on:click="">Novice</a>
+            <a class="dropdown-item" href="#">Hobbiest</a>
+            <a class="dropdown-item" href="#">Mechanic</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Angry</a>
+          </div>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
