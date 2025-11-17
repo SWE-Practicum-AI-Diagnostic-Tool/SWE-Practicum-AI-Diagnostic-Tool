@@ -76,12 +76,12 @@ const validateAuth = auth({
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
     const dbUser = await getUserDB(user.sub);
-    let readData = getFields(dbUser, ["name", "email"]);
+    let readData = getFields(dbUser, ["name", "email", "attitude", "crashOut"]);
     res.send(readData);
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
-    let setData = getFields(req.body, ["name", "email"]);
+    let setData = getFields(req.body, ["name", "email", "attitude", "crashOut"]);
     const user = await getUserAuth0(req.headers.authorization);
     await updateUserDB(user.sub, setData);
     res.send({ success: true });

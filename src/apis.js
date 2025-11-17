@@ -37,6 +37,6 @@ export async function getUserData() {
   return serverGet('get-user-data');
 }
 
-export async function setUserData( name, email, attitude, crashOut ) {
-  return serverPost('set-user-data', { name }, { email }, { attitude }, { crashOut });
+export async function setUserData(params) {
+  return serverPost('set-user-data', params);
 }

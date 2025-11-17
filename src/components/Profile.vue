@@ -5,6 +5,7 @@ import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
 import { setUserData } from '../apis.js';
+import { C } from 'mermaid/dist/chunks/mermaid.esm.min/chunk-KXVH62NG.mjs';
 
 export default defineComponent({
   setup() {
@@ -29,13 +30,13 @@ export default defineComponent({
     }
   },
   methods: {
-    saveProfile() {
+    saveProfile(params) {
       // TODO: Save profile changes to database
-      setUserData(this.Name, this.Email, this.attitude, this.crashingOut);
+      setUserData(params);
     },
     editPage() {
       this.editMode = !this.editMode;
-      if (!this.editMode) this.saveProfile();
+      if (!this.editMode) this.saveProfile({name: this.Name});
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -46,7 +47,7 @@ export default defineComponent({
         this.triggerEffect2();
       else
       this.triggerEffect();
-      setUserData(this.crashingOut);
+      setUserData({crashOut: this.crashingOut});
     },
     triggerEffect() {
       this.isShaking = true;
@@ -105,7 +106,8 @@ export default defineComponent({
         </div>
         <p>Email: </p>
         <div>
-          <p> {{ Email }}</p>
+          <p v-if="!editMode">{{ Email }}</p>
+          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your email" />
         </div>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
