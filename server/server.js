@@ -6,6 +6,7 @@ import cors from 'cors';
 import { createUser, getUser, updateUser, getUserData, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
+import e from 'express';
 
 // const options = {
 //   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
@@ -75,13 +76,18 @@ const validateAuth = auth({
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
     const user = await getUserData(req.headers.authorization);
     const dbUser = await getUser(user.sub);
-    res.send({ name: dbUser.name });
+    res.send({ name: dbUser.name, email: dbUser.email });
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
-    const { name } = req.body;
+    const fields = ["name", "email"];
+    for(const field in fields){
+      if(req.body.hasOwnProperty(field)){
+        updateFields[field] = req.body[field];
+      }
+    }
     const user = await getUserData(req.headers.authorization);
-    await updateUser(user.sub, { name });
+    await updateUser(user.sub, updateFields);
     res.send({ success: true });
   })
 

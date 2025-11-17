@@ -44,7 +44,7 @@ export async function getUserData(authorization) {
 export async function createUser(userid, name) {
   const dbUser = await getUser(userid);
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const user = { _id: userid, name: name, flowcharts: [] };
+  const user = { _id: userid, name: name, flowcharts: [], email: "", attitude: "", crashOut: 0 };
 
   if (!dbUser) {
     // Create a user using the MongoClient

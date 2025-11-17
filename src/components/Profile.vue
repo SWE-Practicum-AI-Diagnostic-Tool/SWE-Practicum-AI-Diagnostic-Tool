@@ -23,7 +23,7 @@ export default defineComponent({
       crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
       isShaking2: false,
-      Email: '@example.com',
+      Email: '',
       random: 0,
       userData: null,
       isRolling: false,
@@ -31,29 +31,6 @@ export default defineComponent({
     }
   },
   methods: {
-    async ask() {
-      this.response = '';
-      this.loading = true;
-      try {
-        const res = await getResponse(this.inputValue);
-        // strip legacy mocked prefix if present so we don't echo the prompt
-        let out = res;
-        const prefix = 'Mocked response (client):';
-        if (typeof out === 'string' && out.startsWith(prefix)) {
-          out = out.slice(prefix.length).trim();
-        }
-        // Remove legacy 'OK — received your request.' wrapper if present
-        const legacyOk = 'OK — received your request.';
-        if (typeof out === 'string' && out.startsWith(legacyOk)) {
-          out = out.slice(legacyOk.length).trim();
-        }
-        this.response = out;
-      } catch (err) {
-        this.response = 'Error: ' + (err?.message || String(err));
-      } finally {
-        this.loading = false;
-      }
-    },
     saveProfile() {
       // TODO: Save profile changes to database
       setUserData(this.Name);
@@ -104,6 +81,7 @@ export default defineComponent({
   async mounted() {
     const userData = await getUserData();
     this.Name = userData.name;
+    this.Email = userData.email;
   },
 });
 </script>
