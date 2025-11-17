@@ -6,7 +6,7 @@ import cors from 'cors';
 import { createUser, getUserDB, updateUserDB, getUserAuth0, getFlowcharts, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
-import { getFields } from './helper.js';
+import { getFields as filterFields } from './helper.js';
 
 // const options = {
 //   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
@@ -76,12 +76,12 @@ const validateAuth = auth({
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
     const dbUser = await getUserDB(user.sub);
-    let readData = getFields(dbUser, ["name", "email"]);
+    let readData = filterFields(dbUser, ["name", "email"]);
     res.send(readData);
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
-    let setData = getFields(req.body, ["name", "email"]);
+    let setData = filterFields(req.body, ["name", "email"]);
     const user = await getUserAuth0(req.headers.authorization);
     await updateUserDB(user.sub, setData);
     res.send({ success: true });

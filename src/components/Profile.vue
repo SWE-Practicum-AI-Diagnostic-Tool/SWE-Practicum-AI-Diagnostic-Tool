@@ -58,7 +58,7 @@ export default defineComponent({
     },
     saveProfile() {
       // TODO: Save profile changes to database
-      setUserData(this.Name);
+      setUserData({name: this.Name});
     },
     editPage() {
       this.editMode = !this.editMode;

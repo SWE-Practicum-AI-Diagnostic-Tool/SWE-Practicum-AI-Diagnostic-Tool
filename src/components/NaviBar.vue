@@ -17,6 +17,7 @@ import { logout, authState } from '../auth.js'
           <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
           <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
           <li><RouterLink to="/service1" class="nav-link">Try it Out</RouterLink></li>
+          <li><RouterLink to="/flowcharts" class="nav-link">Your Flowcharts</RouterLink></li>
         </ul>
         <ul
           class="js-clone-nav 
