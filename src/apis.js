@@ -37,6 +37,12 @@ export async function getUserData() {
   return serverGet('get-user-data');
 }
 
+/**
+ * Update user data
+ * Ex: { name: "John Doe" }
+ * @param {Object} params The attributes you want to change
+ * @returns Success
+ */
 export async function setUserData(params) {
   return serverPost('set-user-data', params);
 }
