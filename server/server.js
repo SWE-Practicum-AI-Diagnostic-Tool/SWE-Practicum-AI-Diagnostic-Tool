@@ -3,10 +3,10 @@ import express from 'express';
 // import fs from 'fs';
 import { auth } from 'express-oauth2-jwt-bearer';
 import cors from 'cors';
-import { createUser, getUser, updateUser, getUserData, saveFlowchart } from './user.js';
+import { createUser, getUserDB, updateUserDB, getUserAuth0, getFlowcharts, saveFlowchart } from './user.js';
 import { client } from './mongo.js';
 import { getResponse, generateQuestionsPrompt, generateFlowchartPrompt } from './genai.js';
-import e from 'express';
+import { getFields } from './helper.js';
 
 // const options = {
 //   key: fs.readFileSync('CARIT_PRIVATEKEY.key'),
@@ -40,8 +40,8 @@ const validateAuth = auth({
   });
 
   app.get('/api/create-user', validateAuth, async (req, res) => {
-    const user = await getUserData(req.headers.authorization);
-    const msg = await createUser(user.sub, user.name);
+    const user = await getUserAuth0(req.headers.authorization);
+    const msg = await createUser(user.sub, user.name, user.email);
     res.send(msg);
   });
 
@@ -62,32 +62,28 @@ const validateAuth = auth({
     const { vehicle, issues, responses } = req.body;
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
-    const user = await getUserData(req.headers.authorization);
+    const user = await getUserAuth0(req.headers.authorization);
     await saveFlowchart(user.sub, response, vehicle, issues, responses);
     res.send(response);
   });
 
   app.get('/api/get-flowcharts', validateAuth, async (req, res) => {
-    const user = await getUserData(req.headers.authorization);
+    const user = await getUserAuth0(req.headers.authorization);
     const flowcharts = await getFlowcharts(user.sub);
     res.send(flowcharts);
   });
 
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
-    const user = await getUserData(req.headers.authorization);
-    const dbUser = await getUser(user.sub);
-    res.send({ name: dbUser.name, email: dbUser.email, crashOut: dbUser.crashOut, attitude: dbUser.attitude });
+    const user = await getUserAuth0(req.headers.authorization);
+    const dbUser = await getUserDB(user.sub);
+    let readData = getFields(dbUser, ["name", "email"]);
+    res.send(readData);
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
-    const fields = ["name", "email", "attitude", "crashOut"];
-    for(const field in fields){
-      if(req.body.hasOwnProperty(field)){
-        updateFields[field] = req.body[field];
-      }
-    }
-    const user = await getUserData(req.headers.authorization);
-    await updateUser(user.sub, updateFields);
+    let setData = getFields(req.body, ["name", "email"]);
+    const user = await getUserAuth0(req.headers.authorization);
+    await updateUserDB(user.sub, setData);
     res.send({ success: true });
   })
 
