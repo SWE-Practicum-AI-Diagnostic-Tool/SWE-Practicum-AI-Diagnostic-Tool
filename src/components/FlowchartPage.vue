@@ -68,7 +68,6 @@ onMounted(async () => {
                   <p><strong>Vehicle:</strong> {{ vehicles[idx].make || 'Unknown' }} {{ vehicles[idx].model || '' }} ({{ vehicles[idx].year || '' }})</p>
                   <p><strong>Issues:</strong> {{ issues[idx] }}</p>
                   <div v-for="response in flowchart.responses">
-                    {{ console.log(response.question) }}
                     <strong>{{ response.question }}</strong><br/>
                     {{ response.option }}
                   </div>
