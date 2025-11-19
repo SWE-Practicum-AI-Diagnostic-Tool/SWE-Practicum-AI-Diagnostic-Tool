@@ -50,14 +50,16 @@ onMounted(async () => {
     <div class="container">
       <div class="row align-items-start">
         <div class="col-12">
-          <div class="dots"></div>
-          <div class="row align-items-center">
-            <div class="col-lg-5">
+          <!-- <div class="dots"></div> -->
+          <!-- <div class="row align-items-center"> -->
+            <!-- <div class="col-lg-5"> -->
               <h1 class="heading" data-aos="fade-up" data-aos-delay="0">
                 Flowcharts
               </h1>
               <div class="excerpt" data-aos="fade-up" data-aos-delay="100">
-                Here are your flowcharts
+                <div v-if="flowcharts.length === 0">
+                  You haven't generated any flowcharts yet.
+                </div>
               </div>
 
               <!-- Flowcharts -->
@@ -65,14 +67,19 @@ onMounted(async () => {
                 <div v-if="!loading[idx] && !error[idx]">
                   <p><strong>Vehicle:</strong> {{ vehicles[idx].make || 'Unknown' }} {{ vehicles[idx].model || '' }} ({{ vehicles[idx].year || '' }})</p>
                   <p><strong>Issues:</strong> {{ issues[idx] }}</p>
+                  <div v-for="response in flowchart.responses">
+                    {{ console.log(response.question) }}
+                    <strong>{{ response.question }}</strong><br/>
+                    {{ response.option }}
+                  </div>
                 </div>
                 <div v-if="loading[idx]" class="loading">Loading...</div>
                 <div v-else-if="error[idx]" class="error">{{ error[idx] }}</div>
                 <div v-else v-html="flowchartSvg[idx]" class="flowchart-container"></div>
               </div>
 
-            </div>
-          </div>
+            <!-- </div> -->
+          <!-- </div> -->
         </div>
       </div>
     </div>
