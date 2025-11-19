@@ -2,7 +2,7 @@
 import NaviBar from "./NaviBar.vue";
 import MarkdownIt from 'markdown-it';
 import { useRoute } from "vue-router";
-import { getResponse } from "../genai.js";
+import { getResponse, getFlowchart, getQuestions } from "../genai.js";
 import { getVehicles } from "../vehicles.js";
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import mermaid from 'mermaid/dist/mermaid.esm.min.mjs';
@@ -27,7 +27,7 @@ const route = useRoute();
 const details = route.query || {};
 
 // Get vehicle data
-const vehicle = details;
+const vehicle = { year: details.year, make: details.make, model: details.model, trim: details.trim };
 const issues = details.issues || "No issues provided";
 
 // Status variables
@@ -39,16 +39,6 @@ const error = ref(null);
 const step = ref('questions'); // 'questions' or 'flowchart'
 const flowchartSvg = ref('');
 
-// Helper to return a displayable value or a default placeholder
-const formatField = (val, placeholder = "None") => {
-  if (val === undefined || val === null) return placeholder;
-  if (typeof val === "string") {
-    return val.trim() === "" ? placeholder : val;
-  }
-  if (typeof val === "number") return isNaN(val) ? placeholder : String(val);
-  return String(val);
-};
-
 // Helper to get feedback from the AI
 const getFeedback = async () => {
   loading.value = true;
@@ -57,7 +47,8 @@ const getFeedback = async () => {
   try {
     if (step.value === 'questions') {
       // Get the multiple choice questions
-      const resp = await getResponse(generateQuestionsPrompt());
+      // const resp = await getResponse(generateQuestionsPrompt(), 'questions');
+      const resp = await getQuestions(vehicle, issues);
       try {
         // Log the response for debugging
         console.log('AI Response:', resp);
@@ -77,7 +68,19 @@ const getFeedback = async () => {
       }
     } else {
       // Get the flowchart
-      const resp = await getResponse(generateFlowchartPrompt());
+      // const resp = await getResponse(generateFlowchartPrompt(), 'flowchart');
+      
+      const responses = Object.entries(userAnswers.value)
+        .map(([questionId, answer]) => {
+          const question = questions.value.find(q => q.id === questionId);
+          const option = question?.options.find(opt => opt.id === answer);
+          return {
+            question: question?.text,
+            option: option?.text
+          };
+        })
+      
+      const resp = await getFlowchart(vehicle, issues, responses);
       console.log('Flowchart response:', resp);
       
       // Extract the Mermaid diagram from the response
@@ -140,86 +143,6 @@ const getFeedback = async () => {
     loading.value = false;
   }
 };
-
-const generateQuestionsPrompt = () => `You are a vehicle diagnostic expert. Based on the following vehicle information and issue description, generate 3-5 multiple choice questions that would help clarify the problem.
-
-IMPORTANT: Your response must be a valid JSON object with this exact structure. Do not include any other text, markdown, or explanations:
-{
-  "questions": [
-    {
-      "id": "q1",
-      "text": "What is the exact question?",
-      "options": [
-        { "id": "a", "text": "First option" },
-        { "id": "b", "text": "Second option" },
-        { "id": "c", "text": "Third option" }
-      ]
-    }
-  ]
-}
-
-Vehicle Information:
-Year: ${formatField(vehicle.year)}
-Make: ${formatField(vehicle.make)}
-Model: ${formatField(vehicle.model)}
-Trim: ${formatField(vehicle.trim)}
-Issues: ${formatField(issues)}
-
-Remember: Return ONLY the JSON object, no other text or formatting.`;
-
-const generateFlowchartPrompt = () => `You are a vehicle diagnostic expert. Create a troubleshooting flowchart using Mermaid diagram syntax based on the following information. The flowchart should guide a mechanic through the diagnostic process.
-
-IMPORTANT: Follow these Mermaid syntax rules exactly:
-1. Start with "graph TD" (top-down graph)
-2. Each node must have a unique ID using single letters (A, B, C, etc.)
-3. Use these node types with simple text (no special characters or parentheses):
-   - [Simple Action Text] for process nodes
-   - {Simple Question Text} for decision nodes
-   - ([Start]) or ([End]) for terminal nodes
-4. Connect nodes with arrows using -->
-5. Label decision paths using only |Yes| or |No| between arrows
-6. Keep node text short and simple
-7. Do not use parentheses, special characters, or technical part numbers in node text
-8. Each line should follow this format:
-   NodeID[Simple Text] --> NodeID2{Simple Question}
-   NodeID2 -->|Yes| NodeID3[Next Step]
-   NodeID2 -->|No| NodeID4[Alternative Step]
-
-Vehicle Information:
-Year: ${formatField(vehicle.year)}
-Make: ${formatField(vehicle.make)}
-Model: ${formatField(vehicle.model)}
-Trim: ${formatField(vehicle.trim)}
-Issues: ${formatField(issues)}
-
-User Responses:
-${Object.entries(userAnswers.value)
-  .map(([questionId, answer]) => {
-    const question = questions.value.find(q => q.id === questionId);
-    const option = question?.options.find(opt => opt.id === answer);
-    return `${question?.text}: ${option?.text}`;
-  })
-  .join('\n')}
-
-Your response must be a valid Mermaid flowchart code block following this EXACT format:
-
-\`\`\`mermaid
-graph TD
-    A([Start]) --> B{Check Issue}
-    B -->|Yes| C[Next Step]
-    B -->|No| D[Alternative]
-\`\`\`
-
-CRITICAL FORMATTING RULES:
-1. "graph TD" must be on its own line
-2. Each node definition and connection must be on a new line
-3. Each line (except "graph TD") must start with 4 spaces
-4. No blank lines between nodes
-5. Each node connection must be a complete statement (e.g., "A --> B")
-6. Use consistent indentation
-7. No extra spaces in node definitions
-
-Return ONLY the mermaid code block with your diagnostic flowchart, no other text or explanations.`;
 
 // Handle user's answer selection
 const handleAnswer = (questionId, answerId) => {

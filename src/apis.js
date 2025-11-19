@@ -1,0 +1,42 @@
+import { getToken } from './auth.js';
+import axios from 'axios'
+
+async function serverGet(endpoint, params) {
+  const url = `http://localhost:3000/api/${endpoint}`;
+  const token = await getToken();
+  const config = { headers: { Authorization: `bearer ${token}` } };
+  if (params) config.params = params;
+  const response = await axios.get(url, config);
+  return response.data;
+}
+
+async function serverPost(endpoint, data) {
+  const url = `http://localhost:3000/api/${endpoint}`;
+  const token = await getToken();
+  const response = await axios.post(url, data, { headers: { Authorization: `Bearer ${token}` } });
+  return response.data;
+}
+
+export async function getResponse(contents) {
+  return serverPost('generate', { contents });
+}
+
+export async function getQuestions(vehicle, issues) {
+  return serverPost('gen-questions', { vehicle, issues });
+}
+
+export async function getFlowchart(vehicle, issues, responses) {
+  return serverPost('gen-flowchart', { vehicle, issues, responses });
+}
+
+export async function getSavedFlowcharts() {
+  return serverGet('get-flowcharts');
+}
+
+export async function getUserData() {
+  return serverGet('get-user-data');
+}
+
+export async function setUserData(params) {
+  return serverPost('set-user-data', params);
+}

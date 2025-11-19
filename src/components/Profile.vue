@@ -1,9 +1,11 @@
 <script>
-import { getResponse } from '../genai.js'
+import { getResponse, getUserData } from '../apis.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
+import { setUserData } from '../apis.js';
+import { C } from 'mermaid/dist/chunks/mermaid.esm.min/chunk-KXVH62NG.mjs';
 
 export default defineComponent({
   setup() {
@@ -14,17 +16,13 @@ export default defineComponent({
   components: {},
   data() {
     return {
-      inputValue: '',
-      response: '',
-      inputCookie: '',
-      loading: false,
-      my_cookie_value: '',
+      attitude: '',
       editMode: false,
-      NewName: this.cookies.get("profileName") || '',
-      crashingOut: this.cookies.get("crashOut") || 0,
+      Name: '',
+      crashingOut: 0,
       isShaking: false,
       isShaking2: false,
-      Email: '@example.com',
+      Email: '',
       random: 0,
       userData: null,
       isRolling: false,
@@ -32,38 +30,13 @@ export default defineComponent({
     }
   },
   methods: {
-    async ask() {
-      this.response = '';
-      this.loading = true;
-      try {
-        const res = await getResponse(this.inputValue);
-        // strip legacy mocked prefix if present so we don't echo the prompt
-        let out = res;
-        const prefix = 'Mocked response (client):';
-        if (typeof out === 'string' && out.startsWith(prefix)) {
-          out = out.slice(prefix.length).trim();
-        }
-        // Remove legacy 'OK — received your request.' wrapper if present
-        const legacyOk = 'OK — received your request.';
-        if (typeof out === 'string' && out.startsWith(legacyOk)) {
-          out = out.slice(legacyOk.length).trim();
-        }
-        this.response = out;
-      } catch (err) {
-        this.response = 'Error: ' + (err?.message || String(err));
-      } finally {
-        this.loading = false;
-      }
-    },
-    saveProfile(string) {
-      // Placeholder function to save profile changes
-      console.log('Profile saved as: ' + string);
-      this.cookies.set("profileName", string, "7d");
+    saveProfile(params) {
+      // TODO: Save profile changes to database
+      setUserData(params);
     },
     editPage() {
       this.editMode = !this.editMode;
-      if(!this.editMode)
-        this.saveProfile(this.NewName);
+      if (!this.editMode) this.saveProfile({name: this.Name});
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -74,6 +47,7 @@ export default defineComponent({
         this.triggerEffect2();
       else
       this.triggerEffect();
+      setUserData({crashOut: this.crashingOut});
     },
     triggerEffect() {
       this.isShaking = true;
@@ -101,12 +75,13 @@ export default defineComponent({
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
-    let crashingOut = this.cookies.get("crashOut");
-    console.log("Crashout value: " + crashingOut);
   },
   async mounted() {
-    const userData = await fetchUserData();
-    console.log(userData);
+    const userData = await getUserData();
+    this.Name = userData.name;
+    this.Email = userData.email;
+    this.attitude = userData.attitude;
+    this.crashingOut = userData.crashOut || 0;
   },
 });
 </script>
@@ -126,12 +101,25 @@ export default defineComponent({
         <img :src="personPhoto" alt="Profile Image" />
         <p>Pofile Name: </p>
         <div>
-          <p v-if="!editMode">{{ NewName }}</p>
-          <input v-if="editMode" v-model="NewName" type="text" placeholder="Enter your name" />
+          <p v-if="!editMode">{{ Name }}</p>
+          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your name" />
         </div>
         <p>Email: </p>
         <div>
-          <p> {{ Email }}</p>
+          <p v-if="!editMode">{{ Email }}</p>
+          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your email" />
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown button
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" v-on:click="">Novice</a>
+            <a class="dropdown-item" href="#">Hobbiest</a>
+            <a class="dropdown-item" href="#">Mechanic</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Angry</a>
+          </div>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>

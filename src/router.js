@@ -2,15 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import FormView from './components/Form.vue';
 import VehicleSubmit from './components/VehicleSubmit.vue';
-import VehicleHelp from './components/VehicleHelp.vue';
+import VehicleInfo from './components/VehicleInfo.vue';
+import VehicleQuestions from './components/VehicleQuestions.vue';
+import VehicleFlowchart from './components/VehicleFlowchart.vue';
 import Profile from './components/Profile.vue';
 import Home from './components/Home.vue';
-import VehicleInfo from './components/VehicleInfo.vue';
 import ProblemDesc from './components/ProblemDesc.vue';
 import Features from './components/Features.vue';
 import Login from './components/Login.vue';
 import AboutUs from './components/AboutUs.vue';
 import Register from './components/NewUser.vue';
+
 
 // Set up routes that are going to be used by RouterView
 const routes = [
@@ -22,7 +24,8 @@ const routes = [
   { path: '/aboutus', name: 'AboutUs', component: AboutUs },
   { path: '/form', component: FormView },
   { path: '/vehicle-submit', component: VehicleSubmit},
-  { path: '/vehicle-help', component: VehicleHelp},
+  { path: '/vehicle-questions', component: VehicleQuestions},
+  { path: '/vehicle-flowchart', component: VehicleFlowchart},
   { path: '/profile', component: Profile},
   { path: '/register', component: Register}
 ];
