@@ -1,9 +1,7 @@
 <template>
-  <NaviBar />
-
-  <div class="login-container">
+<div class="login-container">
     <div class="login-card">
-      <h1>Login</h1>
+      <h1>Register</h1>
       <form @submit.prevent="handleLogin">
         <!-- Email -->
         <div class="form-group">
@@ -29,34 +27,61 @@
           />
         </div>
 
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            v-model="confirmPassword"
+            id="confirmPassword"
+            type="password"
+            placeholder="Re-enter your password"
+            required
+          />
+        </div>
+
+        <!-- SSN -->
+        <div class="form-group">
+          <label for="ssn">SNN</label>
+          <input
+            v-model="ssn"
+            id="ssn"
+            type="password"
+            placeholder="Please give us your SSNs"
+            required
+          />
+        </div>
+
         <!-- Error message -->
         <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <p v-if="checkpasswords()" class="error">{{ passwordErrorMessage }}</p>
 
         <!-- Submit -->
-        <button type="submit">Log In</button>
-      </form>
+        <button type="submit">Register</button>
+    </form>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import NaviBar from './NaviBar.vue'
-
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-const handleLogin = () => {
-  // Test login - replace with real API/auth
-  if (email.value === 'test@example.com' && password.value === 'password123') {
-    errorMessage.value = ''
-    router.push('/')
-  } else {
-    errorMessage.value = 'Invalid email or password.'
-  }
+<script>
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+            confirmPassword: '',
+            ssn: '',
+            errorMessage: ''
+        }
+    },
+    methods: {
+        checkpasswords() {
+            if(this.password !== this.confirmPassword) {
+                this.passwordErrorMessage = "Passwords do not match.";
+                return true;
+            }
+            return false;
+        }
+    }
 }
 </script>
 
@@ -74,8 +99,10 @@ const handleLogin = () => {
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 350px;
+  width: 550px;
   text-align: center;
+  margin-top: 100px;
+  margin-bottom: 25px;
 }
 
 h1 {

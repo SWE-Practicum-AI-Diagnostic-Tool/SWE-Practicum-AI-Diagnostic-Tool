@@ -28,3 +28,9 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+.env
+server.csr
+server.key
+CARIT_CSR.csr
+CARIT_PRIVATEKEY.key
+CARIT_CRT.crt

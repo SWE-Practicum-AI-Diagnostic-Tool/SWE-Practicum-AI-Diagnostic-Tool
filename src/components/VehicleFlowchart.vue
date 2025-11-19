@@ -1,0 +1,145 @@
+<!-- src/views/VehicleFlowchart.vue -->
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import mermaid from 'mermaid/dist/mermaid.esm.min.mjs'
+import { getFlowchart } from '../apis.js'
+
+const route = useRoute()
+const router = useRouter()
+
+const vehicle = {
+  year: route.query.year,
+  make: route.query.make,
+  model: route.query.model,
+  trim: route.query.trim
+}
+const issues = route.query.issues
+const answers = JSON.parse(route.query.answers || '{}')
+
+const flowchartSvg = ref('')
+const loading = ref(false)
+const error = ref(null)
+
+const initializeMermaid = () => {
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    flowchart: { htmlLabels: true, curve: 'basis' }
+  })
+}
+
+const getDiagram = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const formattedAnswers = Object.entries(answers).map(([id, text]) => ({
+      question: id,
+      option: text
+    }))
+    const resp = await getFlowchart(vehicle, issues, formattedAnswers)
+    const mermaidMatch = resp.match(/```mermaid\n([\s\S]*?)\n```/)
+    if (!mermaidMatch) throw new Error('Mermaid code block not found')
+    const code = mermaidMatch[1].trim()
+    await mermaid.parse(code)
+    const { svg } = await mermaid.render('diagnostic-flowchart', code)
+    flowchartSvg.value = svg
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+}
+
+const goBack = () => {
+  router.push({ path: '/vehicle-questions', query: route.query })
+}
+
+onMounted(() => {
+  initializeMermaid()
+  getDiagram()
+})
+</script>
+
+<template>
+  <div class="untree_co-section" id="features-section">
+    <div class="container">
+      <div style="max-width:800px;margin:20px auto;">
+        <h2>Vehicle Help</h2>
+        <p><strong>Vehicle:</strong> {{ vehicle.make || 'Unknown' }} {{ vehicle.model || '' }} ({{ vehicle.year || '' }})</p>
+        <p><strong>Issues submitted:</strong> {{ issues }}</p>
+        <div style="margin-top:1rem;">
+          <div class="container" style="max-width:800px;margin:20px auto;">
+            <h3>Diagnostic Flowchart</h3>
+            <div v-if="loading" class="loading">Generating flowchart...</div>
+            <div v-else-if="error" class="error">Error: {{ error }}</div>
+            <div v-else v-html="flowchartSvg" class="flowchart-container"></div>
+            <button @click="goBack" class="btn btn-secondary mt-4">Back to Questions</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.question-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+}
+
+.question-text {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  background-color: #f5f5f5;
+}
+
+.option.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.flowchart-container {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  overflow-x: auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.error {
+  color: #dc3545;
+  padding: 10px;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+</style>

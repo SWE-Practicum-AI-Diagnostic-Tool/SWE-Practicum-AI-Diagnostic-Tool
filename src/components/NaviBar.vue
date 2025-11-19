@@ -1,39 +1,64 @@
+<script setup>
+import { themeColor, siteName } from "../items";
+import { RouterLink } from 'vue-router';
+import { logout, authState } from '../auth.js'
+</script>
 <template>
-    <header>
-        AI Diagnostic Tool
-    </header>
- <div>
-    <button v-on:click="goToHome"> Home </button>
- </div>
- <div>
-    <button v-on:click="goToSupport"> Support </button>
- </div>
- <div>
-    <button v-on:click="goToForm"> Form </button>
- </div>
- <div>
-    <button v-on:click="goToLogin"> Login </button>
- </div>
+  <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
+    <div class="container">
+      <div class="site-navigation">
+        <RouterLink to="/" class="logo m-0 float-left">
+          {{ siteName }}<span class="text-primary">.</span>
+        </RouterLink>
+        <ul class="js-clone-nav d-none d-lg-inline-block site-menu float-left">
+          <li class="active">
+            <RouterLink to="/" class="nav-link">Home</RouterLink>
+          </li>
+          <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
+          <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
+          <li><RouterLink to="/service1" class="nav-link">Try it Out</RouterLink></li>
+        </ul>
+        <ul
+          class="js-clone-nav 
+          -none mt-1 d-lg-inline-block site-menu float-right"
+        >
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="!lI" to="/login">Login</RouterLink>
+          </li>
+          <li class="cta-primary">
+            <RouterLink v-if="!lI" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
+          </li>
+          <li class="cta-button-outline" style="margin-right: 5px;">
+            <RouterLink v-if="lI" to="/profile" class="nav-link">Profile</RouterLink>
+          </li>
+          <li class="cta-primary">
+            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">Log Out</RouterLink>
+          </li>
+        </ul>
+        <a
+          href="#"
+          class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block dark d-lg-none"
+          data-toggle="collapse"
+          data-target="#main-navbar"
+        >
+          <span></span>
+        </a>
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
-    export default {
-        methods: {
-            goToSupport(){
-            },
-            goToHome(){
-                this.$router.push('/');
-            },
-            goToForm(){
-                this.$router.push('/form')
-            },
-            goToLogin(){
-                this.$router.push('/Login')
-            }
-        }
+export default {
+  computed: {
+    lI() {
+      return authState.isAuthenticated
     }
+  },
+  methods: {
+    loggingOut() {
+      logout();
+    }
+  }
+}
 </script>
-
-
-<style>
-</style>
