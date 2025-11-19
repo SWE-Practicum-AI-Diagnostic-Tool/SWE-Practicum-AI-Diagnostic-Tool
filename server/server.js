@@ -39,7 +39,7 @@ const validateAuth = auth({
     res.send('Server is running!');
   });
 
-  app.get('/api/create-user', validateAuth, async (req, res) => {
+  app.post('/api/create-user', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
     const msg = await createUser(user.sub, user.name, user.email);
     res.send(msg);
@@ -62,28 +62,24 @@ const validateAuth = auth({
     const { vehicle, issues, responses } = req.body;
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
-    const user = await getUserAuth0(req.headers.authorization);
-    await saveFlowchart(user.sub, response, vehicle, issues, responses);
+    await saveFlowchart(req.headers.userid, response, vehicle, issues, responses);
     res.send(response);
   });
 
   app.get('/api/get-flowcharts', validateAuth, async (req, res) => {
-    const user = await getUserAuth0(req.headers.authorization);
-    const flowcharts = await getFlowcharts(user.sub);
+    const flowcharts = await getFlowcharts(req.headers.userid);
     res.send(flowcharts);
   });
 
   app.get('/api/get-user-data', validateAuth, async (req, res) => {
-    const user = await getUserAuth0(req.headers.authorization);
-    const dbUser = await getUserDB(user.sub);
+    const dbUser = await getUserDB(req.headers.userid);
     let readData = filterFields(dbUser, ["name", "email"]);
     res.send(readData);
   });
 
   app.post('/api/set-user-data', validateAuth, async (req, res) => {
     let setData = filterFields(req.body, ["name", "email"]);
-    const user = await getUserAuth0(req.headers.authorization);
-    await updateUserDB(user.sub, setData);
+    await updateUserDB(req.headers.userid, setData);
     res.send({ success: true });
   })
 
