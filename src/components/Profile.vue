@@ -1,13 +1,18 @@
 <script>
-import { getResponse, getUserData } from '../apis.js'
+import { getResponse, getUserData, setUserData } from '../apis.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
-import { setUserData } from '../apis.js';
 import { C } from 'mermaid/dist/chunks/mermaid.esm.min/chunk-KXVH62NG.mjs';
 
 export default defineComponent({
+  // beforeRouteLeave(to, from) {
+  //     setUserData({name: this.Name, email: this.Email, attitude: this.attitude, crashOut: this.crashingOut});
+  // },
+  beforeUnmount() {
+      setUserData({name: this.Name, email: this.Email, attitude: this.attitude, crashOut: this.crashingOut});
+  },
   setup() {
     const { cookies } = useCookies();
     return { cookies };
@@ -36,7 +41,7 @@ export default defineComponent({
     },
     editPage() {
       this.editMode = !this.editMode;
-      if (!this.editMode) this.saveProfile({name: this.Name});
+      if (!this.editMode) this.saveProfile({name: this.Name, email: this.Email});
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -47,7 +52,7 @@ export default defineComponent({
         this.triggerEffect2();
       else
       this.triggerEffect();
-      setUserData({crashOut: this.crashingOut});
+      //setUserData({crashOut: this.crashingOut});
     },
     triggerEffect() {
       this.isShaking = true;
@@ -70,6 +75,21 @@ export default defineComponent({
       setTimeout(() => {
         this.isRolling = false;
       }, 1000); // matches the 1s animation duration
+    },
+    changeAttitude(newAttitude) {
+      if(newAttitude == 1){
+        this.attitude = "Novice";
+      }
+      else if(newAttitude == 2){
+        this.attitude = "Hobbiest";
+      }
+      else if(newAttitude == 3){
+        this.attitude = "Mechanic";
+      }
+      else if(newAttitude == 4){
+        this.attitude = "Angry";
+      }
+      //setUserData({attitude: this.attitude});
     },
   },
   mounted() {
@@ -107,18 +127,18 @@ export default defineComponent({
         <p>Email: </p>
         <div>
           <p v-if="!editMode">{{ Email }}</p>
-          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your email" />
+          <input v-if="editMode" v-model="Email" type="text" placeholder="Enter your email" />
         </div>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown button
+            {{ attitude || 'Select Attitude' }}
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#" v-on:click="">Novice</a>
-            <a class="dropdown-item" href="#">Hobbiest</a>
-            <a class="dropdown-item" href="#">Mechanic</a>
+            <a class="dropdown-item" v-on:click="changeAttitude(1)">Novice</a>
+            <a class="dropdown-item" v-on:click="changeAttitude(2)">Hobbiest</a>
+            <a class="dropdown-item" v-on:click="changeAttitude(3)">Mechanic</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Angry</a>
+            <a class="dropdown-item" v-on:click="changeAttitude(4)">Angry</a>
           </div>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>

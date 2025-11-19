@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, onBeforeRouteLeave } from 'vue-router';
 
 import FormView from './components/Form.vue';
 import VehicleSubmit from './components/VehicleSubmit.vue';
@@ -26,7 +26,10 @@ const routes = [
   { path: '/vehicle-submit', component: VehicleSubmit},
   { path: '/vehicle-questions', component: VehicleQuestions},
   { path: '/vehicle-flowchart', component: VehicleFlowchart},
-  { path: '/profile', component: Profile},
+  { path: '/profile', name: "Profile", component: Profile, 
+    beforeEnter: (to, from) => {
+    },  
+  },
   { path: '/register', component: Register}
 ];
 
