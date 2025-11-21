@@ -5,7 +5,6 @@ import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
 import { setUserData } from '../apis.js';
-import { C } from 'mermaid/dist/chunks/mermaid.esm.min/chunk-KXVH62NG.mjs';
 
 export default defineComponent({
   setup() {
@@ -16,13 +15,17 @@ export default defineComponent({
   components: {},
   data() {
     return {
-      attitude: '',
+      inputValue: '',
+      response: '',
+      inputCookie: '',
+      loading: false,
+      my_cookie_value: '',
       editMode: false,
       Name: '',
-      crashingOut: 0,
+      crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
       isShaking2: false,
-      Email: '',
+      Email: '@example.com',
       random: 0,
       userData: null,
       isRolling: false,
@@ -30,13 +33,36 @@ export default defineComponent({
     }
   },
   methods: {
-    saveProfile(params) {
+    async ask() {
+      this.response = '';
+      this.loading = true;
+      try {
+        const res = await getResponse(this.inputValue);
+        // strip legacy mocked prefix if present so we don't echo the prompt
+        let out = res;
+        const prefix = 'Mocked response (client):';
+        if (typeof out === 'string' && out.startsWith(prefix)) {
+          out = out.slice(prefix.length).trim();
+        }
+        // Remove legacy 'OK — received your request.' wrapper if present
+        const legacyOk = 'OK — received your request.';
+        if (typeof out === 'string' && out.startsWith(legacyOk)) {
+          out = out.slice(legacyOk.length).trim();
+        }
+        this.response = out;
+      } catch (err) {
+        this.response = 'Error: ' + (err?.message || String(err));
+      } finally {
+        this.loading = false;
+      }
+    },
+    saveProfile() {
       // TODO: Save profile changes to database
-      setUserData(params);
+      setUserData({name: this.Name});
     },
     editPage() {
       this.editMode = !this.editMode;
-      if (!this.editMode) this.saveProfile({name: this.Name});
+      if (!this.editMode) this.saveProfile(this.Name);
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -47,7 +73,6 @@ export default defineComponent({
         this.triggerEffect2();
       else
       this.triggerEffect();
-      setUserData({crashOut: this.crashingOut});
     },
     triggerEffect() {
       this.isShaking = true;
@@ -75,13 +100,12 @@ export default defineComponent({
   mounted() {
     let my_cookie_value = this.cookies.get("myCoookie");
     console.log(my_cookie_value);
+    let crashingOut = this.cookies.get("crashOut");
+    console.log("Crashout value: " + crashingOut);
   },
   async mounted() {
     const userData = await getUserData();
     this.Name = userData.name;
-    this.Email = userData.email;
-    this.attitude = userData.attitude;
-    this.crashingOut = userData.crashOut || 0;
   },
 });
 </script>
@@ -106,20 +130,7 @@ export default defineComponent({
         </div>
         <p>Email: </p>
         <div>
-          <p v-if="!editMode">{{ Email }}</p>
-          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your email" />
-        </div>
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown button
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#" v-on:click="">Novice</a>
-            <a class="dropdown-item" href="#">Hobbiest</a>
-            <a class="dropdown-item" href="#">Mechanic</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Angry</a>
-          </div>
+          <p> {{ Email }}</p>
         </div>
         <button v-on:click="editPage()">Edit Profile</button>
         <button v-on:click="crashOut" class="btn btn-success">Crash Out!</button>
