@@ -1,9 +1,10 @@
 <script>
-import { getResponse } from '../genai.js'
+import { getResponse, getUserData } from '../apis.js'
 import { useCookies } from "vue3-cookies";
 import { defineComponent } from 'vue';
 //import { fetchUserData } from '../auth.js';
 import personPicture from "../assets/images/UntitledPerson.png";
+import { setUserData } from '../apis.js';
 
 export default defineComponent({
   setup() {
@@ -20,7 +21,7 @@ export default defineComponent({
       loading: false,
       my_cookie_value: '',
       editMode: false,
-      NewName: this.cookies.get("profileName") || '',
+      Name: '',
       crashingOut: this.cookies.get("crashOut") || 0,
       isShaking: false,
       isShaking2: false,
@@ -55,15 +56,13 @@ export default defineComponent({
         this.loading = false;
       }
     },
-    saveProfile(string) {
-      // Placeholder function to save profile changes
-      console.log('Profile saved as: ' + string);
-      this.cookies.set("profileName", string, "7d");
+    saveProfile() {
+      // TODO: Save profile changes to database
+      setUserData({name: this.Name});
     },
     editPage() {
       this.editMode = !this.editMode;
-      if(!this.editMode)
-        this.saveProfile(this.NewName);
+      if (!this.editMode) this.saveProfile(this.Name);
     },
     crashOut() {
       this.crashingOut = Number(this.crashingOut) + 1;
@@ -105,8 +104,8 @@ export default defineComponent({
     console.log("Crashout value: " + crashingOut);
   },
   async mounted() {
-    const userData = await fetchUserData();
-    console.log(userData);
+    const userData = await getUserData();
+    this.Name = userData.name;
   },
 });
 </script>
@@ -126,8 +125,8 @@ export default defineComponent({
         <img :src="personPhoto" alt="Profile Image" />
         <p>Pofile Name: </p>
         <div>
-          <p v-if="!editMode">{{ NewName }}</p>
-          <input v-if="editMode" v-model="NewName" type="text" placeholder="Enter your name" />
+          <p v-if="!editMode">{{ Name }}</p>
+          <input v-if="editMode" v-model="Name" type="text" placeholder="Enter your name" />
         </div>
         <p>Email: </p>
         <div>

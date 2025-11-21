@@ -1,64 +1,62 @@
 <!-- src/views/VehicleFlowchart.vue -->
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import mermaid from 'mermaid/dist/mermaid.esm.min.mjs'
-import { getFlowchart } from '../genai.js'
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import mermaid from 'mermaid/dist/mermaid.esm.min.mjs';
+import { getFlowchart } from '../apis.js';
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 const vehicle = {
   year: route.query.year,
   make: route.query.make,
   model: route.query.model,
   trim: route.query.trim
-}
-const issues = route.query.issues
-const answers = JSON.parse(route.query.answers || '{}')
+};
 
-const flowchartSvg = ref('')
-const loading = ref(false)
-const error = ref(null)
+const issues = route.query.issues;
+const answers = JSON.parse(route.query.answers || '{}');
+
+const flowchartSvg = ref('');
+const loading = ref(false);
+const error = ref(null);
 
 const initializeMermaid = () => {
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'loose',
     flowchart: { htmlLabels: true, curve: 'basis' }
-  })
-}
+  });
+};
 
 const getDiagram = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
   try {
-    const formattedAnswers = Object.entries(answers).map(([id, text]) => ({
-      question: id,
-      option: text
-    }))
-    const resp = await getFlowchart(vehicle, issues, formattedAnswers)
-    const mermaidMatch = resp.match(/```mermaid\n([\s\S]*?)\n```/)
-    if (!mermaidMatch) throw new Error('Mermaid code block not found')
-    const code = mermaidMatch[1].trim()
-    await mermaid.parse(code)
-    const { svg } = await mermaid.render('diagnostic-flowchart', code)
-    flowchartSvg.value = svg
+    const resp = await getFlowchart(vehicle, issues, answers);
+    const mermaidMatch = resp.match(/```mermaid\n([\s\S]*?)\n```/);
+    if (!mermaidMatch) throw new Error('Mermaid code block not found');
+    const code = mermaidMatch[1].trim();
+    await mermaid.parse(code);
+    const { svg } = await mermaid.render('diagnostic-flowchart', code);
+    flowchartSvg.value = svg;
   } catch (err) {
-    error.value = err.message
+    error.value = err.message;
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const goBack = () => {
-  router.push({ path: '/vehicle-questions', query: route.query })
-}
+  router.push({ path: '/vehicle-questions', query: route.query });
+};
 
 onMounted(() => {
   initializeMermaid()
   getDiagram()
-})
+});
+
 </script>
 
 <template>

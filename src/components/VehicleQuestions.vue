@@ -2,7 +2,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getQuestions } from '../genai.js'
+import { getQuestions } from '../apis.js'
 
 const route = useRoute()
 const router = useRouter()
