@@ -1,7 +1,15 @@
 <script setup>
+import { onMounted } from "vue";
 import { themeColor } from "../items";
 const heading = "Features";
 const subHeading = "it fixes your car what else do you need to know";
+
+const totalCrashOuts = 0;
+
+onMounted(async () => {
+  const dbData = await fetch("/api/getTotalCrashOuts").then(res => res.json());
+  this.totalCrashOuts = dbData.crashOuts;
+});
 
 const advantages = [
   {
@@ -166,6 +174,9 @@ const advantages = [
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <h2>Total Crashouts by Users: {{ totalCrashOuts }}</h2>
       </div>
     </div>
   </div>

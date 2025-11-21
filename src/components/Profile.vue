@@ -44,8 +44,8 @@ export default defineComponent({
       if (!this.editMode) this.saveProfile({name: this.Name, email: this.Email});
     },
     crashOut() {
-      this.crashingOut = Number(this.crashingOut) + 1;
-      this.cookies.set("crashOut", this.crashingOut);
+      //this.crashingOut = Number(this.crashingOut) + 1;
+      //this.cookies.set("crashOut", this.crashingOut);
       //console.log("Crashouts: " + this.crashingOut);
       this.random = Math.random();
       if (this.random < 0.5)
