@@ -8,6 +8,10 @@ import { ref } from 'vue'
 
 </script>
 <template>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/fonts/icomoon/style.css" />
+    <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css" />
+    <link rel="stylesheet" href="/css/style.css" />
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
     <div class="container">
       <div class="site-navigation">
@@ -70,16 +74,6 @@ export default {
   }
 }
 
-const enabled = ref(false)
-
-watch(enabled, (newValue) => {
-  if (newValue) {
-    document.documentElement.classList.add('dark-mode');
-  } else {
-    document.documentElement.classList.remove('dark-mode');
-  }
-  console.log("Toggle changed:", newValue)
-})
 </script>
 
 
