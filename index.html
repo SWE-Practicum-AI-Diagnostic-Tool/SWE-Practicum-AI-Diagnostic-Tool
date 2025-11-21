@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="/fonts/icomoon/style.css" />
     <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css" />
     <link rel="stylesheet" href="/css/style.css" />
+    <script> // Sets the theme to dark if the user has it set in their OS or previously selected
+  try {
+    const saved = localStorage.getItem('theme');
+    const dark = saved ? saved === 'dark'
+      : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (dark) document.documentElement.classList.add('dark');
+  } catch {}
+</script>
   </head>
   <body data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
     <div class="lines-wrap">

@@ -30,22 +30,21 @@
   --ftbg2: #739eff;
  }
 
-.dark-theme {
+.dark {
   --bg: #121212;
   --sc: #003cbd;
-  --tc: rgba(255, 255, 255);
+  --tc: rgba(255, 255, 255, 0.8);
   --selbg: #407bff;
   --sc2: #5489ff;
   --btc2: #b3b3bd;
-
   --btc: #b3b3b3;
-  --tc2: rgba(255, 255, 255, 0.8);
-  --sdw: rgba(255,255,255,0.15);
-  --bor: rgba(255, 255, 255, 0.1);
+  --tc2: rgba(255, 255, 255, 0.5);
+  --sdw: rgba(255,255,255,0.85);
+  --bor: rgba(255, 255, 255, 0.9);
   --nav: rgba(255,255,255,0.5);
-  --bsdw: rgba(255,255,255,0.05);
-  --ln: rgba(0, 60, 189, 0.07);
-  --icn: rgba(24, 144,134,0.3);
+  --bsdw: rgba(255,255,255,0.95);
+  --ln: rgba(0, 60, 189, 0.93);
+  --icn: rgba(24, 144,134,0.7);
   --bor2: #040506;
   --bgr: rgba(0,60,189,0.9);
   --sdw2: rgba(0,60,189,0.6);
@@ -53,10 +52,10 @@
 /* all below are currently the same for light/dark and don't seem to be in use*/
   --ibg: #6fe7dd;
   --ibg2: #ffc93c;
-  --icn2: rgba(255,201,60,0.3);
+  --icn2: rgba(255,201,60,0.7);
   --ibg3: #f73859;
-  --icn3: rgba(247,56,89,0.3);
-  --icn4: rgba(64,123,255,0.3);
+  --icn3: rgba(247,56,89,0.7);
+  --icn4: rgba(64,123,255,0.7);
   --news: #c6c6c6;
   --ftbg: #efefef;
   --ftc: #888888;

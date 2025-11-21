@@ -9,9 +9,9 @@ import { ref } from 'vue'
 </script>
 <template>
   <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/fonts/icomoon/style.css" />
-    <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/fonts/icomoon/style.css" />
+  <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css" />
+  <link rel="stylesheet" href="/css/style.css" />
   <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
     <div class="container">
       <div class="site-navigation">
@@ -20,7 +20,7 @@ import { ref } from 'vue'
         </RouterLink>
         <ul class="js-clone-nav d-none d-lg-inline-block site-menu float-left">
           <li class="active">
-            <RouterLink to="/" class="nav-link">Home</RouterLink>
+            <RouterLink to="/" class="nav-link" >Home</RouterLink>
           </li>
           <li><RouterLink to="/features" class="nav-link">Features</RouterLink></li>
           <li><RouterLink to="/aboutus" class="nav-link">About us</RouterLink></li>
@@ -38,13 +38,13 @@ import { ref } from 'vue'
             <RouterLink v-if="!lI" to="/login">Login</RouterLink>
           </li>
           <li class="cta-primary">
-            <RouterLink v-if="!lI" to="/register" :style="[{ backgroundColor: themeColor }]">Register</RouterLink>
+            <RouterLink v-if="!lI" to="/register">Register</RouterLink>
           </li>
           <li class="cta-button-outline" style="margin-right: 5px;">
             <RouterLink v-if="lI" to="/profile" class="nav-link">Profile</RouterLink>
           </li>
           <li class="cta-primary">
-            <RouterLink v-if="lI" @click="loggingOut()" to="/" :style="[{ backgroundColor: themeColor }]">Log Out</RouterLink>
+            <RouterLink v-if="lI" @click="loggingOut()" to="/" >Log Out</RouterLink>
           </li>
         </ul>
         <a
@@ -74,6 +74,39 @@ export default {
   }
 }
 
+// Toggle theme (dark <-> light) controlled by the slider
+window.addEventListener('DOMContentLoaded', () => {
+  const checkbox = document.querySelector('.switch input[type="checkbox"]');
+  const nav = document.querySelector('.site-nav');
+
+
+  // apply theme: checkbox checked => light mode, unchecked => dark mode
+  const applyTheme = (isLight) => {
+    if (nav) {
+      if (isLight) {
+        nav.classList.remove('dark');
+      }
+      else {
+        nav.classList.add('dark');
+      }
+    }
+    document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+    localStorage.setItem('lightMode', isLight ? 'true' : 'false');
+  };
+
+  // initialize from storage (default: dark)
+  const stored = localStorage.getItem('lightMode');
+  const isLight = stored === 'true';
+  if (checkbox) checkbox.checked = isLight;
+  applyTheme(isLight);
+
+  // listen for user toggles
+  if (checkbox) {
+    checkbox.addEventListener('change', (e) => {
+      applyTheme(e.target.checked);
+    });
+  }
+});
 </script>
 
 
