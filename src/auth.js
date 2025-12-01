@@ -57,10 +57,11 @@ async function createUser() {
   if (!token) return;
   
   try {
-    const res = await axios.get('http://localhost:3000/api/create-user', {
-      headers: { authorization: `Bearer ${token}` },
-      timeout: 3000,
-    });
+    const res = await axios.post(
+      'http://localhost:3000/api/create-user',
+      {},
+      { headers: { authorization: `Bearer ${token}` }, timeout: 3000 },
+    );
     console.log(res.data);
   } catch (err) {
     console.log(err);

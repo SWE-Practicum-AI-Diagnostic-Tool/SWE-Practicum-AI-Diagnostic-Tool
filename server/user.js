@@ -7,6 +7,11 @@ import { client } from './mongo.js';
  * @returns {WithId<Document> | null} The user if it exists
  */
 export async function getUserDB(userid) {
+  if (!userid) {
+    console.log("getUserDB: Missing required fields");
+    return "Missing required fields";
+  }
+
   // Check if a user exists using the MongoClient
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const res = await collection.findOne({ _id: userid });
@@ -31,6 +36,11 @@ export async function getUserAuth0(authorization) {
  * @param {Object} updates The updates
  */
 export async function updateUserDB(userid, updates) {
+  if (!userid || !updates) {
+    console.log("updateUserDB: Missing required fields");
+    return "Missing required fields";
+  }
+
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   await collection.updateOne({ _id: userid }, { $set: updates });
 }
@@ -43,9 +53,15 @@ export async function updateUserDB(userid, updates) {
  * @returns Whether the user account was created or not
  */
 export async function createUser(userid, name, email) {
+  if (!userid || !name || !email) {
+    console.log("createUser: Missing required fields");
+    return "Missing required fields";
+  }
+
   const dbUser = await getUserDB(userid);
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
-  const user = { _id: userid, name: name, flowcharts: [], email: "", attitude: "", crashOut: 0 };
+  // Use the provided email when creating a new user
+  const user = { _id: userid, name: name, flowcharts: [], email: email || "", attitude: "", crashOut: 0 };
 
   if (!dbUser) {
     // Create a user using the MongoClient
@@ -57,7 +73,8 @@ export async function createUser(userid, name, email) {
   // Check for missing fields
   let updated = false;
   for (const field in user) {
-    if (!dbUser.hasOwnProperty(field)) {
+    // If the user record is missing a field, or the field is empty (like email), set it
+    if (!dbUser.hasOwnProperty(field) || dbUser[field] === undefined || dbUser[field] === null || (typeof dbUser[field] === 'string' && dbUser[field].trim() === '')) {
       dbUser[field] = user[field];
       updated = true;
     }
@@ -85,6 +102,11 @@ export async function createUser(userid, name, email) {
  * @param {Array<Object>} responses User responses
  */
 export async function saveFlowchart(userid, flowchart, vehicle, issues, responses) {
+  if (!userid || !flowchart || !vehicle || !issues || !responses) {
+    console.log("saveFlowchart: Missing required fields");
+    return "Missing required fields";
+  }
+
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const MAX_FLOWCHARTS = 5;
 
@@ -104,7 +126,40 @@ export async function saveFlowchart(userid, flowchart, vehicle, issues, response
  * @returns {Array<string>} The flowcharts
  */
 export async function getFlowcharts(userid) {
+  if (!userid) {
+    console.log("getFlowcharts: Missing required fields");
+    return "Missing required fields";
+  }
+
   const collection = client.db(DATABASE).collection(USER_COLLECTION);
   const res = await collection.findOne({ _id: userid });
   return res.flowcharts;
+}
+
+/**
+ * Delete a flowchart by index for a given user
+ * @param {string} userid
+ * @param {number} index
+ */
+export async function deleteFlowchart(userid, index) {
+  if (!userid || index === undefined || index === null) {
+    console.log("deleteFlowchart: Missing required fields");
+    return "Missing required fields";
+  }
+
+  const collection = client.db(DATABASE).collection(USER_COLLECTION);
+  const res = await collection.findOne({ _id: userid });
+  if (!res || !Array.isArray(res.flowcharts)) {
+    console.log("deleteFlowchart: No flowcharts found for user", userid);
+    return "No flowcharts";
+  }
+
+  if (index < 0 || index >= res.flowcharts.length) {
+    console.log("deleteFlowchart: Index out of range", index);
+    return "Index out of range";
+  }
+
+  res.flowcharts.splice(index, 1);
+  await collection.updateOne({ _id: userid }, { $set: { flowcharts: res.flowcharts } });
+  return { success: true };
 }
