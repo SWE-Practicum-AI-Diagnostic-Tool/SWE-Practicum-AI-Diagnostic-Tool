@@ -83,14 +83,14 @@ window.addEventListener('DOMContentLoaded', () => {
   // apply theme: checkbox checked => light mode, unchecked => dark mode
   const applyTheme = (isLight) => {
     if (nav) {
-      if (isLight) {
+      if (!isLight) {
         nav.classList.remove('dark');
       }
       else {
         nav.classList.add('dark');
       }
     }
-    document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+    document.documentElement.setAttribute('class', isLight ? 'light' : 'dark');
     localStorage.setItem('lightMode', isLight ? 'true' : 'false');
   };
 
