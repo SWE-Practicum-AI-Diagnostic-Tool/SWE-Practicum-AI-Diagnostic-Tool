@@ -20,10 +20,12 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors({
-  origin: 'https://localhost:5173', // Allow requests from your Vue dev server
-  credentials: true // If you’re using cookies or Authorization headers
-}));
+// app.use(cors({
+//   // origin: 'https://localhost:5173', // Allow requests from your Vue dev server
+//   origin: 'https://100.127.21.227:4040', // Allow requests from your Vue dev server
+//   credentials: true // If you’re using cookies or Authorization headers
+// }));
+app.use(cors());
 
 // Middleware to validate access tokens
 const validateAuth = auth({
