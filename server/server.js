@@ -37,30 +37,30 @@ const validateAuth = auth({
  * Start the server
  */
 (function startServer() {
-  app.get('/api/health', (req, res) => {
+  app.get('/health', (req, res) => {
     res.send('Server is running!');
   });
 
-  app.post('/api/create-user', validateAuth, async (req, res) => {
+  app.post('/create-user', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
     const msg = await createUser(user.sub, user.name, user.email);
     res.send(msg);
   });
 
-  app.post('/api/generate', validateAuth, async (req, res) => {
+  app.post('/generate', validateAuth, async (req, res) => {
     const msg = req.body.contents;
     const response = await getResponse(msg);
     res.send(response);
   });
   
-  app.post('/api/gen-questions', validateAuth, async (req, res) => {
+  app.post('/gen-questions', validateAuth, async (req, res) => {
     const { vehicle, issues } = req.body;
     const msg = generateQuestionsPrompt(vehicle, issues);
     const response = await getResponse(msg);
     res.send(response);
   });
 
-  app.post('/api/gen-flowchart', validateAuth, async (req, res) => {
+  app.post('/gen-flowchart', validateAuth, async (req, res) => {
     const { vehicle, issues, responses } = req.body;
     const msg = generateFlowchartPrompt(vehicle, issues, responses);
     const response = await getResponse(msg);
@@ -68,12 +68,12 @@ const validateAuth = auth({
     res.send(response);
   });
 
-  app.get('/api/get-flowcharts', validateAuth, async (req, res) => {
+  app.get('/get-flowcharts', validateAuth, async (req, res) => {
     const flowcharts = await getFlowcharts(req.headers.userid);
     res.send(flowcharts);
   });
 
-  app.post('/api/delete-flowchart', validateAuth, async (req, res) => {
+  app.post('/delete-flowchart', validateAuth, async (req, res) => {
     try {
       const { index } = req.body;
       const result = await deleteFlowchart(req.headers.userid, index);
@@ -85,13 +85,13 @@ const validateAuth = auth({
     }
   });
 
-  app.get('/api/get-user-data', validateAuth, async (req, res) => {
+  app.get('/get-user-data', validateAuth, async (req, res) => {
     const dbUser = await getUserDB(req.headers.userid);
     let readData = filterFields(dbUser, ["name", "email"]);
     res.send(readData);
   });
 
-  app.post('/api/set-user-data', validateAuth, async (req, res) => {
+  app.post('/set-user-data', validateAuth, async (req, res) => {
     let setData = filterFields(req.body, ["name", "email"]);
     await updateUserDB(req.headers.userid, setData);
     res.send({ success: true });
