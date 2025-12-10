@@ -2,6 +2,8 @@ import { reactive } from 'vue';
 import { createAuth0Client } from '@auth0/auth0-spa-js'
 import axios from 'axios'
 
+export const SERVER_ADDRESS = "https://carit-2px87.ondigitalocean.app"
+
 export const authState = reactive({
   client: null,
   isAuthenticated: false,
@@ -58,7 +60,7 @@ async function createUser() {
   
   try {
     const res = await axios.post(
-      'http://localhost:3000/api/create-user',
+      `${SERVER_ADDRESS}/api/create-user`,
       {},
       { headers: { authorization: `Bearer ${token}` }, timeout: 3000 },
     );

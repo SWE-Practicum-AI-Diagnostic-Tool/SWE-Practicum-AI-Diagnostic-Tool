@@ -1,8 +1,8 @@
-import { getToken, getUserID } from './auth.js';
+import { getToken, getUserID, SERVER_ADDRESS } from './auth.js';
 import axios from 'axios'
 
 async function serverGet(endpoint, params) {
-  const url = `http://localhost:3000/api/${endpoint}`;
+  const url = `${SERVER_ADDRESS}/api/${endpoint}`;
   const token = await getToken();
   const userid = getUserID();
   const config = { headers: { Authorization: `bearer ${token}`, userid } };
@@ -12,7 +12,7 @@ async function serverGet(endpoint, params) {
 }
 
 async function serverPost(endpoint, data) {
-  const url = `http://localhost:3000/api/${endpoint}`;
+  const url = `${SERVER_ADDRESS}/api/${endpoint}`;
   const token = await getToken();
   const userid = getUserID();
   const response = await axios.post(url, data, { headers: { Authorization: `Bearer ${token}`, userid } });

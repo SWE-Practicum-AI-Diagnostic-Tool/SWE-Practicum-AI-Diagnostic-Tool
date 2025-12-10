@@ -37,11 +37,9 @@ const validateAuth = auth({
  * Start the server
  */
 (function startServer() {
-  app.get('/', (req, res) => {
+  app.get('/api/health', (req, res) => {
     res.send('Server is running!');
   });
-
-  app.get('/carit', (_, res) => res.send('OK'));
 
   app.post('/api/create-user', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
