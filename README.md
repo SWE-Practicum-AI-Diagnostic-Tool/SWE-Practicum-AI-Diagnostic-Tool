@@ -51,7 +51,8 @@ AUTH0_DOMAIN=dev-4h6xdz700e55oeeo.us.auth0.com
 ## Server Setup
 Run the `server/server.js` file using `node` to start the server. This will let the client talk to the server, and in turn, the database.
 ```shell
-node server/server.js
+cd server
+npm start
 ```
 
 ## MongoDB Database
