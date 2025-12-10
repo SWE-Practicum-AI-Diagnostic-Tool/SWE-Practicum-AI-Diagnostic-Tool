@@ -41,6 +41,8 @@ const validateAuth = auth({
     res.send('Server is running!');
   });
 
+  app.get('/carit', (_, res) => res.send('OK'));
+
   app.post('/api/create-user', validateAuth, async (req, res) => {
     const user = await getUserAuth0(req.headers.authorization);
     const msg = await createUser(user.sub, user.name, user.email);
@@ -97,7 +99,8 @@ const validateAuth = auth({
     res.send({ success: true });
   })
 
-  app.listen(3000, () => {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
     console.log('Server is running on port 3000');
   });
 
